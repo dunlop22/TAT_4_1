@@ -1,0 +1,20 @@
+//fghkfkfjh
+.5/****/
+
+int main()
+{
+    setlocale(LC_ALL, rus);
+
+    TScanner* scan;
+    int type;
+    LEX lex;
+
+    scan = new TScanner(inputtxt);
+
+    do {
+        type = scan->Scanner(lex);
+        cout << lex <<  - << type << endl;
+    } while (type != TEnd);
+
+    return 0;
+}
