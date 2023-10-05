@@ -1,7 +1,8 @@
 #pragma once
 
 #include <iostream>
-#include <fstream>
+#include <fstream>		//Работа с файлами
+
 using namespace std;
 
 #define MAX_TEXT 100000     //макисмальная длина текста ИМ
@@ -53,8 +54,6 @@ typedef char LEX[MAX_LEX];   //лексема
 #define TMult       52	//*
 #define TDiv        53	///
 #define TMod        54	//%
-#define TLShift     55
-#define TRShift     56
 
 //конец исходного модуля
 #define TEnd        70

@@ -18,9 +18,15 @@
     <ClCompile Include="TAT_4_1.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="Scaner.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="defs.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Scaner.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
