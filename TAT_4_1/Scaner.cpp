@@ -30,7 +30,7 @@ void Scaner::PrintError(string error, string a)
 	exit(0);
 }
 
-int Scaner::Scanner(LEX lex)
+int Scaner::FScaner(LEX lex)
 {
 	int i;          //текущая длина лексемы
 

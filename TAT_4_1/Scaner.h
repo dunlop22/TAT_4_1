@@ -13,7 +13,7 @@ public:
 	int GetUK();
 
 	void PrintError(string, string);
-	int Scanner(LEX lex);
+	int FScaner(LEX lex);
 	void GetData(string);
 
 	Scaner(string);	//Конструктор
