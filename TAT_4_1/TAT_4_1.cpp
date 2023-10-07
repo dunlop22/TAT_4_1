@@ -10,7 +10,7 @@ int main()
     int type;
     LEX lex;
 
-    scan = new Scaner("input.txt");
+    scan = new Scaner("input12.ivi");
 
     do 
     {
