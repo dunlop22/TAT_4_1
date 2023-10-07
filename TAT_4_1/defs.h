@@ -7,7 +7,8 @@ using namespace std;
 
 #define MAX_TEXT 100000     //макисмальная длина текста ИМ
 #define MAX_LEX 100         //максимальная длина лексемы
-#define MAX_KEYW 8			//число ключевых слов
+#define MAX_KEYW 9			//число ключевых слов
+#define MAX_CONST 10		//Длина константы
 
 typedef char IM[MAX_TEXT];   //текст ИМ
 typedef char LEX[MAX_LEX];   //лексема
@@ -21,7 +22,7 @@ typedef char LEX[MAX_LEX];   //лексема
 #define TReturn		6
 #define TTrue		7
 #define TFalse		8
-
+#define TClass		9
 //идентификаторы
 #define TIdent      10
 

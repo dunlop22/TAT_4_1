@@ -1,12 +1,12 @@
 #include "Scaner.h"
 
 LEX Keyword[MAX_KEYW] = {	"bool", "double",
-								"main", "return", "if", "else",
-									"true", "false"};
+								 "if", "else", "main", "return",
+									"true", "false", "class"};
 
 int IndexKeyword[MAX_KEYW] = {	TBool, TDouble,
-									TMain, TReturn, TIf, TElse,
-										TTrue, TFalse};
+									 TIf, TElse, TMain, TReturn,
+										TTrue, TFalse, TClass};
 
 
 void Scaner::PutUK(int i)
@@ -23,11 +23,13 @@ int Scaner::GetUK()
 void Scaner::PrintError(string error, string a)
 {
 	if (a[0] == '\0')
+	{
 		cout << "Ошибка - " << error;
+	}
 	else
+	{
 		cout << "Ошибка - " << error << "- Неверный символ " << a;
-
-	exit(0);
+	}
 }
 
 int Scaner::FScaner(LEX lex)
@@ -46,7 +48,6 @@ start:
 		uk++;
 	}
 
-
 	if (t[uk] == '/' && t[uk + 1] == '/')	//Однострочный комментарий
 	{
 		uk = uk + 2;
@@ -56,8 +57,6 @@ start:
 		}
 		goto start;
 	}
-
-
 
 	if (t[uk] == '/' && t[uk + 1] == '*')	//Многострочный комментарий
 	{
@@ -88,7 +87,7 @@ start:
 
 		while (t[uk] >= '0' && t[uk] <= '9')
 		{
-			if (i < MAX_LEX - 1)
+			if (i < MAX_CONST - 1)
 			{
 				lex[i++] = t[uk++];
 			}
@@ -96,6 +95,11 @@ start:
 			{
 				uk++;
 			}
+		}
+		if (i == MAX_CONST - 1)
+		{
+			PrintError("Слишком длинная константа", lex);
+			return TError;
 		}
 
 		if (t[uk] == '.')
@@ -134,21 +138,25 @@ start:
 
 		return TIdent;
 	}
-	else if (t[uk] == '.' && t[uk + 1] >= '0' && t[uk + 1] <= '9')
+	else if (t[uk] == '.')
 	{
 		lex[i++] = t[uk++];
-		lex[i++] = t[uk++];
-		goto CONT;
+		if (t[uk + 1] >= '0' && t[uk + 1] <= '9')
+		{
+			lex[i++] = t[uk++];
+			goto CONT;
+		}
+		return TTochka;
 	}
 	else if (t[uk] == ',')
 	{
 		lex[i++] = t[uk++];
-		return TTochka;
+		return TZapya;
 	}
 	else if (t[uk] == ';')
 	{
 		lex[i++] = t[uk++];
-		return TZapya;
+		return TTochkaZap;
 	}
 	else if (t[uk] == '(')
 	{
@@ -244,7 +252,7 @@ start:
 	CONT:
 	while (t[uk] >= '0' && t[uk] <= '9')
 	{
-		if (i < MAX_LEX - 1)
+		if (i < MAX_CONST - 1)
 		{
 			lex[i++] = t[uk++];
 		}
@@ -253,6 +261,12 @@ start:
 			uk++;
 		}
 	}
+	if (i == MAX_CONST - 1)
+	{
+		PrintError("Слишком длинная константа", lex);
+		return TError;
+	}
+
 
 	return TConstFloat;
 }

@@ -1,6 +1,11 @@
 //fghkfkfjh
 .5/****/
 
+class Students {
+    // Имя студента
+    ficha: string name;
+}
+
 int main()
 {
     setlocale(LC_ALL, rus);
@@ -13,7 +18,7 @@ int main()
 
     do {
         type = scan->Scanner(lex);
-        cout << lex <<  - << type << endl;
+        cout << lex <<  - << type << endl; ...
     } while (type != TEnd);
 
     return 0;
