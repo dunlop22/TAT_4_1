@@ -1,13 +1,8 @@
 #include "Scaner.h"
 
-LEX Keyword[MAX_KEYW] = {	"bool", "double",
-								 "if", "else", "main", "return",
-									"true", "false", "class"};
+LEX Keyword[MAX_KEYW] = {	"bool", "double", "if", "else", "main", "return", "true", "false", "class"};
 
-int IndexKeyword[MAX_KEYW] = {	TBool, TDouble,
-									 TIf, TElse, TMain, TReturn,
-										TTrue, TFalse, TClass};
-
+int IndexKeyword[MAX_KEYW] = {	TBool, TDouble, TIf, TElse, TMain, TReturn, TTrue, TFalse, TClass};
 
 void Scaner::PutUK(int i)
 {
@@ -20,7 +15,7 @@ int Scaner::GetUK()
 }
 
 //Печать ошибки
-void Scaner::PrintError(string error, string a)
+void Scaner::PrintError(string error, string a, char znak)
 {
 	if (a[0] == '\0')
 	{
@@ -28,18 +23,22 @@ void Scaner::PrintError(string error, string a)
 	}
 	else
 	{
-		cout << "Ошибка - " << error << "- Неверный символ " << a;
+		cout << "Ошибка - " << error << "- Неверный символ ";
+	}
+	if (znak != '\0')
+	{
+		cout << " (" << znak << ")";	//Вывод ошибочного символа
 	}
 }
 
 int Scaner::FScaner(LEX lex)
 {
 	int i;          //текущая длина лексемы
-
-	for (i = 0; i < MAX_LEX; i++) lex[i] = 0;    //очистка поля лексемы
-
+	for (i = 0; i < MAX_LEX; i++)
+	{
+		lex[i] = 0;    //очистка поля лексемы
+	}
 	i = 0;
-
 
 start:
 	//все игнорируемые элементы:
@@ -74,7 +73,6 @@ start:
 		goto start;
 	}
 
-
 	if (t[uk] == '\0')
 	{
 		lex[0] = '#';
@@ -98,7 +96,7 @@ start:
 		}
 		if (i == MAX_CONST - 1)
 		{
-			PrintError("Слишком длинная константа", lex);
+			PrintError("Слишком длинная константа", lex, '\0');
 			return TError;
 		}
 
@@ -110,7 +108,7 @@ start:
 
 		return TConstInt;
 	}
-	else if (t[uk] >= 'a' && t[uk] <= 'z' || t[uk] >= 'A' && t[uk] <= 'Z')			//начинается идентификатор 
+	else if (t[uk] >= 'a' && t[uk] <= 'z' || t[uk] >= 'A' && t[uk] <= 'Z')			//Идентификатор 
 	{
 		lex[i++] = t[uk++];
 
@@ -243,11 +241,10 @@ start:
 	}
 	else
 	{
-		PrintError("Неверный символ", lex);
+		PrintError("Неверный символ", lex, t[uk]);
 		uk++;
 		return TError;
 	}
-
 
 	CONT:
 	while (t[uk] >= '0' && t[uk] <= '9')
@@ -263,10 +260,9 @@ start:
 	}
 	if (i == MAX_CONST - 1)
 	{
-		PrintError("Слишком длинная константа", lex);
+		PrintError("Слишком длинная константа", lex, '\0');
 		return TError;
 	}
-
 
 	return TConstFloat;
 }
@@ -278,7 +274,7 @@ void Scaner::GetData(string FileName)
 
 	if (!file.is_open())	//Проверка наличия файла
 	{
-		PrintError("Ошибка при чтении файла", "");
+		PrintError("Ошибка при чтении файла", "", '\0');
 		exit(1);
 	}
 	else         //Удачное открытие файла
@@ -290,7 +286,7 @@ void Scaner::GetData(string FileName)
 			if (!file.eof()) t[i++] = symb;
 			if (i >= MAX_TEXT - 1)		//Проверка размера
 			{
-				PrintError("Слишком большой размер исходного модуля", "");
+				PrintError("Слишком большой размер исходного модуля", "", '\0');
 				break;
 			}
 		}
@@ -298,7 +294,6 @@ void Scaner::GetData(string FileName)
 		t[i] = '\0';
 		file.close();	//Закрытие файла
 	}
-
 }
 
 Scaner::Scaner(string FileName)

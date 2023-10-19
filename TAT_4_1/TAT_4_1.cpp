@@ -4,13 +4,13 @@
 
 int main()
 {
-    setlocale(LC_ALL, "rus");
+    setlocale(LC_ALL, "rus");   //Поддержка русского языка
 
     Scaner* scan;
     int type;
     LEX lex;
 
-    scan = new Scaner("input12.ivi");
+    scan = new Scaner("input.txt");   //Имя файла для чтения
 
     do 
     {

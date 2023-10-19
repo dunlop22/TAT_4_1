@@ -1,5 +1,4 @@
 #pragma once
-
 #include <iostream>
 #include <fstream>		//Работа с файлами
 

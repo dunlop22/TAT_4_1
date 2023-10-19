@@ -1,26 +1,42 @@
-//fghkfkfjh
-.5/****/
+#class Posilka 
+{
+    bool danger;
+    double shirina;
+    double visota;
+    double dlina;
+    void set(double shirina, double visota, double dlina) 
+    {
+        shirina = 20;
+        visota = 10;
+        dlina = 5;
+        if (shirina > 10)
+        {
+            Pos2.danger = True;
+        }
+        else
+        {
+            Pos2.danger = False;
+        }
 
-class Students {
-    // »м€ студента
-    ficha: string name;
-}
+    }
+};
 
 int main()
 {
-    setlocale(LC_ALL, rus);
+    Posilka Pos1;
+    Posilka Pos2;
+    // устанавливаем значени€ полей класса
+    Pos1.set(7, 7, 7);
+    Pos2.set(20, 10, 5);
+    std::string ves;
 
-    TScanner* scan;
-    int type;
-    LEX lex;
-
-    scan = new TScanner(inputtxt);
-
-    do {
-        type = scan->Scanner(lex);
-        cout << lex <<  - << type << endl; ...
-    } while (type != TEnd);
-
-    return 0;
+    \
+    ?
+    ~
+    `
+    []
+    '
+    $
+    @
+    
 }
-12
