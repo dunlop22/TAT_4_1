@@ -307,7 +307,7 @@ void dias::M()//готово
 }
 
 
-void dias::H()
+void dias::H()//готово
 {
 /*
 return
@@ -315,10 +315,21 @@ return
 ------  return  ----|	Q	| ------>
 					 -------
 */
+	LEX lex;
+	int type;
+
+	type = scan->FScaner(lex);
+
+	if (type != TReturn)
+	{
+		scan->PrintError("Ожидался оператор return", lex, '\0');
+	}
+
+	Q();
 }
 
 
-void dias::N()
+void dias::N()//готово
 {
 /*
 if
@@ -326,13 +337,54 @@ if
 														 ----  else  ---|	M	|---
 														|				 -------	|
 														|							|
-						 -------			 -------	\/							|
+						 -------			 -------	|							|
 -----  if  ---  (  -----|	Q	|---  )  ---|	M	|--------------------------------------->
 						 -------			 -------
 */
+	LEX lex;
+	int type;
+	int uk1;
+
+	type = scan->FScaner(lex);
+
+	if (type != TIf)
+	{
+		scan->PrintError("Ожидался оператор if", lex, '\0');
+	}
+
+	type = scan->FScaner(lex);
+
+	if (type != TLS)
+	{
+		scan->PrintError("Ожидался символ '('", lex, '\0');
+	}
+
+	Q();
+
+	type = scan->FScaner(lex);
+
+	if (type != TRS)
+	{
+		scan->PrintError("Ожидался символ ')'", lex, '\0');
+	}
+
+	M();
+
+	uk1 = scan->GetUK();
+	type = scan->FScaner(lex);
+
+	if (type != TElse)
+	{
+		scan->PutUK(uk1);
+	}
+	else
+	{
+		M();
+	}
+
 }
 
-void dias::O()
+void dias::O()//готово
 {
 /*
 ПРИСВАИВАНИЕ
@@ -342,15 +394,16 @@ void dias::O()
 		   Имя				Выражение
 		 
 */
-	B();
 	LEX lex;
 	int type;
+
+	B();
 
 	type = scan->FScaner(lex);
 
 	if (type != TSave)
 	{
-		scan->PrintError("Ожидался знак \"+\"", lex, '\0');
+		scan->PrintError("Ожидался знак \"=\"", lex, '\0');
 	}
 
 	Q();
@@ -369,6 +422,19 @@ void dias::Q()
 			   XOR
 */
 
+	LEX lex;
+	int type;
+	int uk1;
+
+	do
+	{
+		R();
+		uk1 = scan->GetUK();
+		type = scan->FScaner(lex);
+	} while (type == TOR);
+
+	scan->PutUK(uk1);
+
 }
 
 void dias::R()
@@ -382,7 +448,21 @@ XOR
 			 -------
 				И
 */
+
+	LEX lex;
+	int type;
+	int uk1;
+
+	do
+	{
+		U();
+		uk1 = scan->GetUK();
+		type = scan->FScaner(lex);
+	} while (type == TXOR);
+
+	scan->PutUK(uk1);
 }
+
 void dias::V()
 {
 /*
@@ -396,6 +476,19 @@ void dias::V()
 			 -------
 
 */
+
+	LEX lex;
+	int type;
+	int uk1;
+
+	do
+	{
+		W();
+		uk1 = scan->GetUK();
+		type = scan->FScaner(lex);
+	} while (type == TEQ || type == TNEQ);
+
+	scan->PutUK(uk1);
 }
 
 void dias::U()
@@ -409,6 +502,19 @@ void dias::U()
 			 -------
 			Равенство
 */
+
+	LEX lex;
+	int type;
+	int uk1;
+
+	do
+	{
+		V();
+		uk1 = scan->GetUK();
+		type = scan->FScaner(lex);
+	} while (type == TAnd);
+
+	scan->PutUK(uk1);
 }
 
 
