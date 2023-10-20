@@ -835,9 +835,6 @@ void dias::I()
 		type = scan->FScaner(lex);
 	}
 
-
-	type = scan->FScaner(lex);
-
 	if (type != TFRS)
 	{
 		scan->PrintError("Ожидался символ '}'", lex, '\0');
