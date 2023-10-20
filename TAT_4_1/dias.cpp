@@ -1,9 +1,5 @@
 #include "dias.h"
-
-
-
-
-void dias::S()//готово
+void dias::S()
 {
 /*	ПРОГРАММА
 S = 
@@ -64,7 +60,7 @@ S =
 	}
 }
 
-void dias::D()//готово
+void dias::D()
 {
 /* ОПИСАНИЕ ДАННЫХ
 D =
@@ -486,6 +482,27 @@ void dias::V()//готово
 	} while (type == TEQ || type == TNEQ);
 
 	scan->PutUK(uk1);
+}
+
+int dias::LookForward(int n)
+{
+	LEX lex;
+	int  savedPointer = scan->GetUK();
+	int  savedLine = scan->Get_Number_Line();
+	int  savedPos = scan->Get_Position();
+
+	int  nextType;
+
+	for (int i = 0; i < n; i++)
+	{
+		nextType = scan->FScaner(lex);
+	}
+
+	scan->Set_Line_Number(savedLine);
+	scan->Set_Position(savedPos);
+	scan->PutUK(savedPointer);
+
+	return nextType;
 }
 
 void dias::U()//готово

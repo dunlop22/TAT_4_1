@@ -14,6 +14,32 @@ int Scaner::GetUK()
 	return uk;
 }
 
+void Scaner::Set_Position(int n)
+{
+	position = n;
+}
+
+void Scaner::Set_Line_Number(int n)
+{
+	line_number = n;
+}
+
+void Scaner::New_Line()
+{
+	line_number = line_number + 1;
+	Set_Position(1);
+}
+
+int Scaner::Get_Number_Line()
+{
+	return line_number;
+}
+
+int Scaner::Get_Position()
+{
+	return position;
+}
+
 //Печать ошибки
 void Scaner::PrintError(string error, string a, char znak)
 {

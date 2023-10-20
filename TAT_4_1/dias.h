@@ -23,6 +23,7 @@ private:
 	void Z();		//Со знаком
 	void P();		//Вызов функции
 	void V();		//Равенство
+	int LookForward(int n);
 
 public:
 	dias(Scaner* s) { scan = s; }
