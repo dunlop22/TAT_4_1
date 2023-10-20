@@ -29,6 +29,8 @@ void Scaner::PrintError(string error, string a, char znak)
 	{
 		cout << " (" << znak << ")";	//Вывод ошибочного символа
 	}
+
+	exit(0);
 }
 
 int Scaner::FScaner(LEX lex)

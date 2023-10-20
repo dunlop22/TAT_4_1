@@ -222,7 +222,7 @@ void dias::K()//готово
 			type = scan->FScaner(lex);
 			scan->PutUK(uk1);
 
-			if (type == TSave && type == TTochkaZap && type == TZapya)
+			if (type == TSave || type == TTochkaZap || type == TZapya)
 			{
 				D();
 			}
@@ -410,7 +410,7 @@ void dias::O()//готово
 }
 
 
-void dias::Q()
+void dias::Q()//готово
 {
 /*
 ВЫРАЖЕНИЕ
@@ -437,7 +437,7 @@ void dias::Q()
 
 }
 
-void dias::R()
+void dias::R()//готово
 {
 /*
 XOR
@@ -463,7 +463,7 @@ XOR
 	scan->PutUK(uk1);
 }
 
-void dias::V()
+void dias::V()//готово
 {
 /*
 РАВЕНСТВО
@@ -491,7 +491,7 @@ void dias::V()
 	scan->PutUK(uk1);
 }
 
-void dias::U()
+void dias::U()//готово
 {
 /*
 И
@@ -535,6 +535,18 @@ void dias::W()
 			 -------
 		    Слагаемое
 */
+	LEX lex;
+	int type;
+	int uk1;
+
+	do
+	{
+		X();
+		uk1 = scan->GetUK();
+		type = scan->FScaner(lex);
+	} while (type == TLT || type == TGT || type == TLE || type == TGE);
+
+	scan->PutUK(uk1);
 }
 
 
@@ -551,6 +563,18 @@ void dias::X()
 			 -------
 		    Множитель
 */
+	LEX lex;
+	int type;
+	int uk1;
+
+	do
+	{
+		Y();
+		uk1 = scan->GetUK();
+		type = scan->FScaner(lex);
+	} while (type == TPlus || type == TMinus);
+
+	scan->PutUK(uk1);
 }
 
 void dias::Y()
@@ -568,9 +592,22 @@ void dias::Y()
 			 -------
 			Со знаком
 */
+	LEX lex;
+	int type;
+	int uk1;
 
+	do
+	{
+		Z();
+		uk1 = scan->GetUK();
+		type = scan->FScaner(lex);
+	} while (type == TMult || type == TDiv || type == TMod);
+
+	scan->PutUK(uk1);
 }
-void dias::Z()
+
+
+void dias::Z()//готово
 {
 /*						
 							 -------
@@ -593,13 +630,59 @@ void dias::Z()
 						 -(-|	Q	|-)-
 							 -------
 */
+
+	LEX lex;
+	int type;
+	int uk1;
+
+	uk1 = scan->GetUK();
+	type = scan->FScaner(lex);
+
+	if (type != TPlus && type != TMinus)
+	{
+		scan->PutUK(uk1);
+	}
+
+	uk1 = scan->GetUK();
+	type = scan->FScaner(lex);
+
+	if (type == TLS)
+	{
+		Q();
+
+		type = scan->FScaner(lex);
+
+		if (type != TRS)
+		{
+			scan->PrintError("Ожидался символ ')'", lex, '\0');
+		}
+	}
+	else if (type == TMain)
+	{
+		scan->PutUK(uk1);
+		P();
+	}
+	else if (type == TIdent)
+	{
+		B();
+
+		if (type == TLS)
+		{
+			scan->PutUK(uk1);
+			P();
+		}
+	}
+	else if (type != TConstInt && type != TConstFloat && type != TTrue && type != TFalse)
+	{
+		scan->PrintError("Ожидалось элементарное выражение", lex, '\0');
+	}
 }
 
 
 
 
 
-void dias::P()
+void dias::P()//готово
 {
 /*
 ВЫЗОВ ФУНКЦИИ
@@ -613,10 +696,35 @@ void dias::P()
 		 ---  main  ----
 
 */
+	LEX lex;
+	int type;
+	int uk1;
 
+	uk1 = scan->GetUK();
+	type = scan->FScaner(lex);
+
+	if (type != TMain)
+	{
+		scan->PutUK(uk1);
+		B();
+	}
+
+	type = scan->FScaner(lex);
+
+	if (type != TLS)
+	{
+		scan->PrintError("Ожидался символ '('", lex, '\0');
+	}
+	
+	type = scan->FScaner(lex);
+
+	if (type != TRS)
+	{
+		scan->PrintError("Ожидался символ ')'", lex, '\0');
+	}
 }
 
-void dias::B()
+void dias::B()//готово
 {
 /*
 Имя
@@ -626,4 +734,106 @@ void dias::B()
 		\/				|
 --------------  a  ------------>
 */
+
+	LEX lex;
+	int type;
+	int uk1;
+
+	do
+	{
+		type = scan->FScaner(lex);
+
+		if (type != TIdent)
+		{
+			scan->PrintError("Ожидался идентификатор", lex, '\0');
+		}
+
+		uk1 = scan->GetUK();
+		type = scan->FScaner(lex);
+	} while (type == TTochka);
+
+	scan->PutUK(uk1);
+}
+
+void dias::I()
+{
+	LEX lex;
+	int type;
+	int uk1;
+
+	type = scan->FScaner(lex);
+
+	if (type != TClass)
+	{
+		scan->PrintError("Ожидалось описание класса", lex, '\0');
+	}
+
+	type = scan->FScaner(lex);
+
+	if (type != TIdent)
+	{
+		scan->PrintError("Ожидался идентификатор", lex, '\0');
+	}
+
+	type = scan->FScaner(lex);
+
+	if (type != TFLS)
+	{
+		scan->PrintError("Ожидался символ '{'", lex, '\0');
+	}
+
+
+	uk1 = scan->GetUK();
+	type = scan->FScaner(lex);
+
+	while (type == TBool || type == TDouble || type == TIdent || type == TClass)
+	{
+		if (type == TClass)
+		{
+			scan->PutUK(uk1);
+			I();
+		}
+		else
+		{
+			type = scan->FScaner(lex);
+
+			if (type == TMain)
+			{
+				scan->PutUK(uk1);
+				F();
+			}
+			else if (type == TIdent)
+			{
+				type = scan->FScaner(lex);
+				scan->PutUK(uk1);
+
+				if (type == TSave || type == TTochkaZap || type == TTochka)
+				{
+					D();
+				}
+				else
+				{
+					F();
+				}
+			}
+		}
+
+		uk1 = scan->GetUK();
+		type = scan->FScaner(lex);
+	}
+
+
+	type = scan->FScaner(lex);
+
+	if (type != TFRS)
+	{
+		scan->PrintError("Ожидался символ '}'", lex, '\0');
+	}
+
+	type = scan->FScaner(lex);
+
+	if (type != TTochkaZap)
+	{
+		scan->PrintError("Ожидался символ ';'", lex, '\0');
+	}
 }

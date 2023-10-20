@@ -5,7 +5,6 @@ class dias
 private:
 	Scaner* scan;
 
-	void S();		//Программа
 	void D();		//Описание данных
 	void B();		//Имя
 	void I();		//Описание класса
@@ -24,5 +23,10 @@ private:
 	void Z();		//Со знаком
 	void P();		//Вызов функции
 	void V();		//Равенство
+
+public:
+	dias(Scaner* s) { scan = s; }
+	~dias() {}
+	void S();		//Программа
 };
 
