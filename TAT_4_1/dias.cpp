@@ -293,11 +293,29 @@ void dias::M()//ready
 		{
 			H();
 		}
+		else if (type == TMain)
+		{
+			P();
+		}
 		else if (type == TIdent)
 		{
-			O();
+			int uk1 = scan->GetUK();
+
+			B();
+
+			type = Look_Forward(1);
+
+			scan->PutUK(uk1);
+
+			if (type == TLS)
+			{
+				P();
+			}
+			else
+			{
+				O();
+			}
 		}
-		else if (type == )
 
 		type = scan->FScaner(lex);
 
