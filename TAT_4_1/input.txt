@@ -1,8 +1,14 @@
-
+class qw
+{
+	bool qwert;
+	P1 = true;
+	Z2 = 5;
+}
 bool func()
 {
 	if (a == 1)
 	{
 		q = 4;
+		j();
 	}
 }

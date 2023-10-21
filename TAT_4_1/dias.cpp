@@ -114,11 +114,12 @@ D =
 		{
 			type = scan->FScaner(lex);
 			Q();
-
 			type = Look_Forward(1);
 		}
 
 	} while (type == TZapya);	//,
+
+	type = scan->FScaner(lex);
 
 	if (type != TTochkaZap)		//;
 	{
@@ -823,6 +824,12 @@ void dias::I()//ready
 				{
 					F();
 				}
+			}
+			else
+			{
+				type = scan->FScaner(lex);
+				type = scan->FScaner(lex);
+				scan->PrintError("Ожидался идентификатор", lex, '\0');
 			}
 		}
 		type = Look_Forward(1);
