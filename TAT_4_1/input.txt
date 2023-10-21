@@ -1,3 +1,8 @@
-class qw
+
+bool func()
 {
-};
+	if (a == 1)
+	{
+		q = 4;
+	}
+}

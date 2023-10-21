@@ -46,10 +46,12 @@ void Scaner::PrintError(string error, string a, char znak)
 	if (a[0] == '\0')
 	{
 		cout << "Ошибка - " << error;
+		cout << "Строка: " << line_number << " Позиция: " << position;
 	}
 	else
 	{
 		cout << "Ошибка - " << error << "- Неверный символ ";
+		cout << "Строка: " << line_number << " Позиция: " << position;
 	}
 	if (znak != '\0')
 	{
@@ -72,30 +74,56 @@ start:
 	//все игнорируемые элементы:
 	while (t[uk] == ' ' || t[uk] == '\n' || t[uk] == '\t')	//Незначащие элементы
 	{
+		if (t[uk] == ' ' || t[uk] == '\t')
+		{
+			position = position + 1;
+		}
+		else
+		{
+			New_Line();
+		}
+
 		uk++;
 	}
 
 	if (t[uk] == '/' && t[uk + 1] == '/')	//Однострочный комментарий
 	{
 		uk = uk + 2;
+		position = position + 2;
+
 		while (t[uk] != '\n' && t[uk] != '\0')
 		{
 			uk++;
+			position = position + 1;
 		}
+
+		New_Line();
 		goto start;
 	}
 
 	if (t[uk] == '/' && t[uk + 1] == '*')	//Многострочный комментарий
 	{
 		uk = uk + 2;
+		position = position + 2;
+
 		while ((t[uk] != '*' || t[uk + 1] != '/') && t[uk] != '\0')
 		{
+			if (t[uk] == '\n')
+			{
+				New_Line();
+			}
+			else
+			{
+				position = position + 1;
+			}
+
 			uk++;
 		}
 
 		if (t[uk] == '*' && t[uk + 1] == '/')
 		{
 			uk = uk + 2;
+			position = position + 2;
 		}
 
 		goto start;
@@ -110,6 +138,7 @@ start:
 	if (t[uk] >= '0' && t[uk] <= '9')
 	{
 		lex[i++] = t[uk++];
+		position = position + 1;
 
 		while (t[uk] >= '0' && t[uk] <= '9')
 		{
@@ -121,6 +150,7 @@ start:
 			{
 				uk++;
 			}
+			position = position + 1;
 		}
 		if (i == MAX_CONST - 1)
 		{
@@ -131,6 +161,7 @@ start:
 		if (t[uk] == '.')
 		{
 			lex[i++] = t[uk++];
+			position = position + 1;
 			goto CONT;
 		}
 
@@ -139,7 +170,7 @@ start:
 	else if (t[uk] >= 'a' && t[uk] <= 'z' || t[uk] >= 'A' && t[uk] <= 'Z')			//Идентификатор 
 	{
 		lex[i++] = t[uk++];
-
+		position = position + 1;
 		while (t[uk] >= '0' && t[uk] <= '9' || t[uk] >= 'a' && t[uk] <= 'z' ||
 			t[uk] >= 'A' && t[uk] <= 'Z' || t[uk] == '_')
 		{
@@ -151,6 +182,7 @@ start:
 			{
 				uk++;
 			}
+			position = position + 1;
 		}
 
 		int j;
@@ -167,9 +199,13 @@ start:
 	else if (t[uk] == '.')
 	{
 		lex[i++] = t[uk++];
+		position = position + 1;
 		if (t[uk + 1] >= '0' && t[uk + 1] <= '9')
 		{
 			lex[i++] = t[uk++];
+
+			position = position + 1;
+
 			goto CONT;
 		}
 		return TTochka;
@@ -177,64 +213,77 @@ start:
 	else if (t[uk] == ',')
 	{
 		lex[i++] = t[uk++];
+		position = position + 1;
 		return TZapya;
 	}
 	else if (t[uk] == ';')
 	{
 		lex[i++] = t[uk++];
+		position = position + 1;
 		return TTochkaZap;
 	}
 	else if (t[uk] == '(')
 	{
 		lex[i++] = t[uk++];
+		position = position + 1;
 		return TLS;
 	}
 	else if (t[uk] == ')')
 	{
 		lex[i++] = t[uk++];
+		position = position + 1;
 		return TRS;
 	}
 	else if (t[uk] == '{')
 	{
 		lex[i++] = t[uk++];
+		position = position + 1;
 		return TFLS;
 	}
 	else if (t[uk] == '}')
 	{
 		lex[i++] = t[uk++];
+		position = position + 1;
 		return TFRS;
 	}
 	else if (t[uk] == '+')
 	{
 		lex[i++] = t[uk++];
+		position = position + 1;
 		return TPlus;
 	}
 	else if (t[uk] == '-')
 	{
 		lex[i++] = t[uk++];
+		position = position + 1;
 		return TMinus;
 	}
 	else if (t[uk] == '*')
 	{
 		lex[i++] = t[uk++];
+		position = position + 1;
 		return TMult;
 	}
 	else if (t[uk] == '/')
 	{
 		lex[i++] = t[uk++];
+		position = position + 1;
 		return TDiv;
 	}
 	else if (t[uk] == '%')
 	{
 		lex[i++] = t[uk++];
+		position = position + 1;
 		return TMod;
 	}
 	else if (t[uk] == '=')
 	{
 		lex[i++] = t[uk++];
+		position = position + 1;
 		if (t[uk] == '=')
 		{
 			lex[i++] = t[uk++];
+			position = position + 1;
 			return TEQ;
 		}
 
@@ -244,14 +293,17 @@ start:
 	{
 		lex[i++] = t[uk++];
 		lex[i++] = t[uk++];
+		position = position + 2;
 		return TNEQ;
 	}
 	else if (t[uk] == '<')
 	{
 		lex[i++] = t[uk++];
+		position = position + 1;
 		if (t[uk] == '=')
 		{
 			lex[i++] = t[uk++];
+			position = position + 1;
 			return TLE;
 		}
 		return TLT;
@@ -259,9 +311,11 @@ start:
 	else if (t[uk] == '>')
 	{
 		lex[i++] = t[uk++];
+		position = position + 1;
 		if (t[uk] == '=')
 		{
 			lex[i++] = t[uk++];
+			position = position + 1;
 			return TGE;
 		}
 
@@ -328,4 +382,6 @@ Scaner::Scaner(string FileName)
 {
 	GetData(FileName);	//Получение данных из исходного файла
 	PutUK(0);
+	Set_Line_Number(1);
+	Set_Position(1);
 }
