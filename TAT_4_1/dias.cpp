@@ -215,11 +215,11 @@ void dias::K()
 		}
 		else if (type == TBool || type == TDouble)
 		{
-			D(	);
+			D();
 		}
 		else if (type == TIdent)
 		{
-			type = Look_Forward(2);
+			type = Look_Forward(3);
 
 			if (type == TSave || type == TTochkaZap || type == TZapya)
 			{
@@ -827,6 +827,8 @@ void dias::I()//ready
 		}
 		type = Look_Forward(1);
 	}
+
+	type = scan->FScaner(lex);
 
 	if (type != TFRS)
 	{
