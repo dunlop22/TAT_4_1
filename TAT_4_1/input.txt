@@ -1,9 +1,8 @@
 class qw
 {
 	bool qwert;
-	P1 = true;
-	Z2 = 5;
-}
+	int num;
+};
 bool func()
 {
 	if (a == 1)
