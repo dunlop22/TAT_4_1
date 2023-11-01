@@ -1,13 +1,15 @@
-class qw
-{
-	bool qwert;
-	int num;
-};
 bool func()
 {
+	double a;
 	if (a == 1)
 	{
-		q = 4;
-		j();
+		qw cl;
+		count();
+		cl..Set_qwert();
+		double rt = 5;
+	}
+	else
+	{
 	}
 }
+

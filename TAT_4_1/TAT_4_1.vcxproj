@@ -141,12 +141,14 @@
   <ItemGroup>
     <ClCompile Include="dias.cpp" />
     <ClCompile Include="Scaner.cpp" />
+    <ClCompile Include="Semantika.cpp" />
     <ClCompile Include="TAT_4_1.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="defs.h" />
     <ClInclude Include="dias.h" />
     <ClInclude Include="Scaner.h" />
+    <ClInclude Include="Semantika.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="input.txt" />

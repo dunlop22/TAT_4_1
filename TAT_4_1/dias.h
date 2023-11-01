@@ -1,9 +1,12 @@
 #pragma once
 #include "Scaner.h"
+#include "Semantika.h"
+
 class dias
 {
 private:
 	Scaner* scan;
+	Tree* root;
 
 	void D();		//Описание данных
 	void B();		//Имя
@@ -26,7 +29,7 @@ private:
 	int Look_Forward(int n);
 
 public:
-	dias(Scaner* s) { scan = s; }
+	dias(Scaner* s) { scan = s; root = new	Tree(scan); }
 	~dias() {}
 	void S();		//Программа
 };

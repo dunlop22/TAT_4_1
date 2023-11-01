@@ -99,6 +99,10 @@ D =
 		scan->PrintError("Ожидался тип", lex, '\0');
 	}
 
+
+	DATA_TYPE semType = root->GetType(type);
+
+	//проверка идентификатора класса на существование
 	do
 	{
 		type = scan->FScaner(lex);
@@ -107,6 +111,8 @@ D =
 		{
 			scan->PrintError("Ожидался идентификатор", lex, '\0');
 		}
+
+		Tree* v = root->SemInclude(lex, ObjVar, semType);
 
 		type = Look_Forward(1);
 
@@ -133,7 +139,7 @@ void dias::F()//ready
 ФУНКЦИЯ =
 										   Имя
 										 -------
-									 ---|   B   |---
+									 ---|   a   |---
 		 ---  bool  ---				|	 -------	|				Составной оператор	
 		|			   |			|				|					 -------
 --------|--  double  --|------------|				|---  (  ---  )  ---|   K   |---->
@@ -151,7 +157,17 @@ void dias::F()//ready
 		scan->PrintError("Ожидался тип", lex, '\0');
 	}
 
-	type = Look_Forward(1);
+	DATA_TYPE semType = root->GetType(type);
+
+	//проверка идентификатора класса на существование
+
+	type = scan->FScaner(lex);
+	if (type != TMain && type != TIdent)
+	{
+		scan->PrintError("Ожидалось имя функции", lex, '\0');
+	}
+
+	/*type = Look_Forward(1);
 	
 	if (type != TMain)
 	{
@@ -160,7 +176,8 @@ void dias::F()//ready
 	else
 	{
 		type = scan->FScaner(lex);
-	}
+	}*/
+	Tree* v = root->SemInclude(lex, ObjFunct, semType);
 
 	type = scan->FScaner(lex);
 
@@ -177,6 +194,7 @@ void dias::F()//ready
 	}
 
 	K();
+	root->SetCur(v);
 }
 
 void dias::K()
@@ -205,6 +223,9 @@ void dias::K()
 	{
 		scan->PrintError("Ожидался символ '{'", lex, '\0');
 	}
+
+	Tree* v = root->SemNewLevel();
+
 
 	type = Look_Forward(1);
 
@@ -243,7 +264,7 @@ void dias::K()
 	{
 		scan->PrintError("Ожидался символ \"}\"", lex, '\0');
 	}
-
+	root->SetCur(v);
 }
 
 
@@ -425,7 +446,6 @@ void dias::O()//ready
 	Q();
 }
 
-
 void dias::Q()//ready
 {
 /*
@@ -505,8 +525,6 @@ void dias::V()//ready
 	}
 }
 
-
-
 void dias::U()//ready
 {
 /*
@@ -532,7 +550,6 @@ void dias::U()//ready
 		type = Look_Forward(1);
 	}
 }
-
 
 void dias::W()//ready
 {
@@ -567,7 +584,6 @@ void dias::W()//ready
 		type = Look_Forward(1);
 	}
 }
-
 
 void dias::X()//ready
 {
@@ -630,7 +646,6 @@ void dias::Y()//ready
 		type = Look_Forward(1);
 	}
 }
-
 
 void dias::Z()//ready
 {
@@ -754,28 +769,34 @@ void dias::B()//ready
 {
 /*
 ИМЯ =
-		 -----  .  -----
-		|				|
-		|				|
-		\/				|
---------------  a  ------------>
+			 ------  a  -----  .  ------
+			|							|
+			|							|
+			\/							|
+----  a  ------------------------------------->
 */
 
+	//СТАЛО
 	LEX lex;
 	int type;
+	type = scan->FScaner(lex);
 
-	do
+	if (type != TIdent)
 	{
+		scan->PrintError("Ожидался идентификатор", lex, '\0');
+	}
+	type = Look_Forward(1);
+	while (type == TTochka)
+	{
+		type = scan->FScaner(lex);
 		type = scan->FScaner(lex);
 
 		if (type != TIdent)
 		{
 			scan->PrintError("Ожидался идентификатор", lex, '\0');
 		}
-
 		type = Look_Forward(1);
-	} while (type == TTochka);
-
+	}
 }
 
 void dias::I()//ready
@@ -812,6 +833,8 @@ void dias::I()//ready
 	{
 		scan->PrintError("Ожидался идентификатор", lex, '\0');
 	}
+
+	Tree* v = root->SemInclude(lex, ObjClass, NO_TYPE);
 
 	type = scan->FScaner(lex);
 
@@ -871,4 +894,6 @@ void dias::I()//ready
 	{
 		scan->PrintError("Ожидался символ \";\"", lex, '\0');
 	}
+
+	root->SetCur(v);
 }
