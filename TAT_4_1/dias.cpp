@@ -96,18 +96,17 @@ D =
 
 	LEX lex;
 	int type;
+	LEX type_lex;
 
-	type = scan->FScaner(lex);
+	type = scan->FScaner(type_lex);
 
 	if (type != TBool && type != TDouble && type != TIdent)
 	{
-		scan->PrintError("Ожидался тип", lex, '\0');
+		scan->PrintError("Ожидался тип", type_lex, '\0');
 	}
-
 
 	DATA_TYPE semType = root->GetType(type);
 
-	//проверка идентификатора класса на существование
 	do
 	{
 		type = scan->FScaner(lex);
@@ -118,6 +117,13 @@ D =
 		}
 
 		Tree* v = root->SemInclude(lex, ObjVar, semType);
+
+		if (semType == TYPE_OBJ_CL)
+		{
+			Tree* cl = root->SemGetClass(type_lex);
+			//ВОПРОС?????		при создании объекта класса поля копируются или просто ссылка?
+			v->SetRightT(cl->GetRight());
+		}
 
 		type = Look_Forward(1);
 

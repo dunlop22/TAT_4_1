@@ -36,6 +36,9 @@ public:
 	void SetLeft(Node* data);
 	void SetRight(Node* data);
 
+	void SetRightT(Tree* node);
+	Tree* GetRight();
+
 	Tree* FindRoot();
 	Tree* FindUp(Tree* from, LEX id);
 	Tree* FindUp(LEX id);
@@ -49,7 +52,8 @@ public:
 	Tree* SemInclude(LEX a, OBJ_TYPE ot, DATA_TYPE t);		//занесение идентификатора a в таблицу с типом t
 	Tree* SemNewLevel();			//новый уровень (для составного оператора)
 	Tree* SemGetVar(LEX a);		//найти в таблице переменную с именем a и вернуть ссылку на соответсвующий элемент дерева
-	Tree* SemGetFunct(LEX a);		//найти в таблице переменную с именем a и вернуть ссылку на соответсвующий элемент дерева
+	Tree* SemGetFunct(LEX a);		//найти в таблице функцию с именем a и вернуть ссылку на соответсвующий элемент дерева
+	Tree* SemGetClass(LEX a);		//найти в таблице класс с именем a и вернуть ссылку на соответсвующий элемент дерева
 	int DupControl(Tree* addr, LEX a);			//проверка идентификатора a на повторное описание внутри блока
 
 	DATA_TYPE GetType(int lexType);

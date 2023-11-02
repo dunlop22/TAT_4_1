@@ -40,6 +40,16 @@ void Tree::SetRight(Node* data)
 	right = new Tree(this, NULL, NULL, data);
 }
 
+void Tree::SetRightT(Tree* node)
+{
+	right = node;
+}
+
+Tree* Tree::GetRight()
+{
+	return right;
+}
+
 Tree* Tree::FindUp(Tree* from, LEX id)
 {
 	Tree* i = from;
@@ -155,7 +165,7 @@ Tree* Tree::SemInclude(LEX a, OBJ_TYPE ot, DATA_TYPE t)
 		cur = cur->left;
 	}
 
-	if (ot == ObjFunct)
+	if (ot == ObjFunct || ot == ObjClass)
 	{
 		v = cur;
 		memcpy(&n.id, &"", 2);
@@ -185,6 +195,13 @@ Tree* Tree::SemGetVar(LEX a)
 		Tree* root = FindRoot();
 		root->Print();
 		scan->PrintError("Неверное использование имени функции", a, '\0');
+	}
+
+	if (v->node->objType == ObjClass)
+	{
+		Tree* root = FindRoot();
+		root->Print();
+		scan->PrintError("Неверное использование имени класса", a, '\0');
 	}
 
 	return v;
@@ -223,6 +240,27 @@ Tree* Tree::SemGetFunct(LEX a)
 		Tree* root = FindRoot();
 		root->Print();
 		scan->PrintError("Идентификатор не является именем функции", a, '\0');
+	}
+
+	return v;
+}
+
+Tree* Tree::SemGetClass(LEX a)
+{
+	Tree* v = FindUp(cur, a);
+
+	if (v == NULL)
+	{
+		Tree* root = FindRoot();
+		root->Print();
+		scan->PrintError("Отсутствует описание класса", a, '\0');
+	}
+
+	if (v->node->objType != ObjClass)
+	{
+		Tree* root = FindRoot();
+		root->Print();
+		scan->PrintError("Идентификатор не является именем класса", a, '\0');
 	}
 
 	return v;
