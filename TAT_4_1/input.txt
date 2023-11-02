@@ -1,8 +1,10 @@
 bool func()
 {
+print();
 	double a;
 	if (a == 1)
 	{
+print();
 		qw cl;
 		count();
 		cl..Set_qwert();

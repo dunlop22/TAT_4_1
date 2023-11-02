@@ -26,6 +26,7 @@ int main()
 
     type = scan->FScaner(lex);
 
+
     if (type != TEnd)
     {
         scan->PrintError("Лишний текст в конце программы", lex, '\0');
@@ -34,6 +35,9 @@ int main()
     {
         printf("Ошибки не найдены.\n");
     }
+
+    printf("\n\n\nСЕМАНТИЧЕСКОЕ ДЕРЕВО\n\n");
+    diag->PrintTree();
 
     return 0;
 }

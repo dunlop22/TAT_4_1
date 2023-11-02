@@ -32,5 +32,7 @@ public:
 	dias(Scaner* s) { scan = s; root = new	Tree(scan); }
 	~dias() {}
 	void S();		//Программа
+
+	void PrintTree();
 };
 

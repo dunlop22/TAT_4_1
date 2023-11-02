@@ -50,7 +50,7 @@ void Scaner::PrintError(string error, string a, char znak)
 	}
 	else
 	{
-		cout << "Ошибка - " << error << "- Неверный символ ";
+		cout << "Ошибка - " << error << " - Неверный символ ";
 		cout << "\nСтрока: " << line_number << " Позиция: " << position;
 	}
 	if (znak != '\0')

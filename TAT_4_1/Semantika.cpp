@@ -215,7 +215,7 @@ Tree* Tree::SemGetFunct(LEX a)
 	{
 		Tree* root = FindRoot();
 		root->Print();
-		scan->PrintError("Отсутствует описание функции", a);
+		scan->PrintError("Отсутствует описание функции", a, '\0');
 	}
 
 	if (v->node->objType != ObjFunct)

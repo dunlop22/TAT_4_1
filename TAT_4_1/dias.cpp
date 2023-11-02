@@ -74,6 +74,11 @@ S =
 	}
 }
 
+void dias::PrintTree()
+{
+	root->Print();
+}
+
 void dias::D()//ready
 {
 /* ÎÏÈÑÀÍÈÅ ÄÀÍÍÛÕ
@@ -321,12 +326,16 @@ void dias::M()//ready
 		else if (type == TIdent)
 		{
 			int uk1 = scan->GetUK();
+			int line = scan->Get_Number_Line();
+			int pos = scan->Get_Position();
 
 			B();
 
 			type = Look_Forward(1);
 
 			scan->PutUK(uk1);
+			scan->Set_Line_Number(line);
+			scan->Set_Position(pos);
 
 			if (type == TLS)
 			{
