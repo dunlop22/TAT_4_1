@@ -269,6 +269,7 @@ void dias::K()
 	{
 		scan->PrintError("Ожидался символ \"}\"", lex, '\0');
 	}
+
 	root->SetCur(v);
 }
 

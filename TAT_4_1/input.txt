@@ -5,13 +5,15 @@ print();
 	if (a == 1)
 	{
 print();
+		bool r;
 		qw cl;
 		count();
-		cl..Set_qwert();
+		cl.Set_qwert();
 		double rt = 5;
 	}
 	else
 	{
+		bool k;
 	}
 }
 
