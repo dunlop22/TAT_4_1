@@ -22,6 +22,7 @@ public:
 	int Get_Position();
 
 	void PrintError(string, string, char);
+	void PrintError(string);
 	int FScaner(LEX lex);
 	void GetData(string);
 

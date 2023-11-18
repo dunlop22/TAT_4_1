@@ -61,6 +61,13 @@ void Scaner::PrintError(string error, string a, char znak)
 	exit(0);
 }
 
+// Сообщение-ошибка
+void Scaner::PrintError(string error)
+{
+	cout << "\n\nОшибка!\n" << error << "\nСтрока: " << line_number << "\nПозиция: " << position << "\n\n";
+	exit(0);
+}
+
 int Scaner::FScaner(LEX lex)
 {
 	int i;          //текущая длина лексемы
