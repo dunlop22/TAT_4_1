@@ -85,7 +85,7 @@ void dias::D()//ready
 D =
 								-------------  ,  ------------------
 		 ---  bool  ---			|									|
-		|			   |		\/									|
+		|			   |       \/									|
 --------|--  double  --|-----------  a  ---------------------------------  ;  ------>
 		|			   |					|					|
 		 -----  a  ----						|					|
@@ -105,7 +105,7 @@ D =
 		scan->PrintError("Ожидался тип", type_lex, '\0');
 	}
 
-	DATA_TYPE semType = root->GetType(type);
+	DATA_TYPE semType = root->GetTypebyLex(type);
 
 	do
 	{
@@ -118,10 +118,11 @@ D =
 
 		Tree* v = root->SemInclude(lex, ObjVar, semType);
 
+		//проверка на существование идентификатора
+		//ссылка на поддерево
 		if (semType == TYPE_OBJ_CL)
 		{
 			Tree* cl = root->SemGetClass(type_lex);
-			//ВОПРОС?????		при создании объекта класса поля копируются или просто ссылка?
 			v->SetRightT(cl->GetRight());
 		}
 
@@ -130,7 +131,11 @@ D =
 		if (type == TSave)
 		{
 			type = scan->FScaner(lex);
-			Q();
+
+			DATA_TYPE valType;
+			LEX className;
+			Q(&valType, className);
+			root->TypeCastingAssign(semType, valType, type_lex, className);
 			type = Look_Forward(1);
 		}
 
@@ -168,7 +173,7 @@ void dias::F()//ready
 		scan->PrintError("Ожидался тип", lex, '\0');
 	}
 
-	DATA_TYPE semType = root->GetType(type);
+	DATA_TYPE semType = root->GetTypebyLex(type);
 
 	//проверка идентификатора класса на существование
 
@@ -178,16 +183,6 @@ void dias::F()//ready
 		scan->PrintError("Ожидалось имя функции", lex, '\0');
 	}
 
-	/*type = Look_Forward(1);
-	
-	if (type != TMain)
-	{
-		B();
-	}
-	else
-	{
-		type = scan->FScaner(lex);
-	}*/
 	Tree* v = root->SemInclude(lex, ObjFunct, semType);
 
 	type = scan->FScaner(lex);
@@ -462,7 +457,7 @@ void dias::O()//ready
 	Q();
 }
 
-void dias::Q()//ready
+void dias::Q(DATA_TYPE* resType, LEX* resTypeName)//ready
 {
 /*
 ВЫРАЖЕНИЕ =
@@ -488,7 +483,7 @@ void dias::Q()//ready
 	}
 }
 
-void dias::R()//ready
+void dias::R(DATA_TYPE* resType, LEX* resTypeName)//ready
 {
 /*
 XOR =
@@ -515,7 +510,7 @@ XOR =
 	}
 }
 
-void dias::V()//ready
+void dias::V(DATA_TYPE* resType, LEX* resTypeName)//ready
 {
 /*
 									 ----  ==  -----
@@ -541,7 +536,7 @@ void dias::V()//ready
 	}
 }
 
-void dias::U()//ready
+void dias::U(DATA_TYPE* resType, LEX* resTypeName)//ready
 {
 /*
 И =
@@ -567,7 +562,7 @@ void dias::U()//ready
 	}
 }
 
-void dias::W()//ready
+void dias::W(DATA_TYPE* resType, LEX* resTypeName)//ready
 {
 /*
 СРАВНЕНИЕ =
@@ -601,7 +596,7 @@ void dias::W()//ready
 	}
 }
 
-void dias::X()//ready
+void dias::X(DATA_TYPE* resType, LEX* resTypeName)//ready
 {
 /*
 СЛАГАЕМОЕ =
@@ -634,7 +629,7 @@ void dias::X()//ready
 
 }
 
-void dias::Y()//ready
+void dias::Y(DATA_TYPE* resType, LEX* resTypeName)//ready
 {
 /*
 МНОЖИТЕЛЬ =
@@ -663,7 +658,7 @@ void dias::Y()//ready
 	}
 }
 
-void dias::Z()//ready
+void dias::Z(DATA_TYPE* resType, LEX* resTypeName)//ready
 {
 /*			
 СО ЗНАКОМ =
@@ -739,7 +734,7 @@ void dias::Z()//ready
 
 
 
-void dias::P()//ready
+void dias::P(DATA_TYPE* resType, LEX* resTypeName)//ready
 {
 /*
 ВЫЗОВ ФУНКЦИИ =

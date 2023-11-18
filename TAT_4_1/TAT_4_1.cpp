@@ -33,11 +33,12 @@ int main()
     }
     else
     {
-        printf("Ошибки не найдены.\n");
+        printf("Ошибки не найдены.\n\n");
     }
 
     printf("\n\n\nСЕМАНТИЧЕСКОЕ ДЕРЕВО\n\n");
     diag->PrintTree();
+    printf("\n\n");
 
     return 0;
 }

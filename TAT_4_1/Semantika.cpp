@@ -128,7 +128,6 @@ void Tree::Print()
 			printf("Вершина ПУСТАЯ\n");
 		right->Print();
 	}
-
 }
 
 void Tree::SetCur(Tree* a)
@@ -272,7 +271,7 @@ int Tree::DupControl(Tree* addr, LEX a)
 	return 1;
 }
 
-DATA_TYPE Tree::GetType(int lexType)
+DATA_TYPE Tree::GetTypebyLex(int lexType)
 {
 	if (lexType == TBool)
 		return TYPE_BOOL;
@@ -281,6 +280,36 @@ DATA_TYPE Tree::GetType(int lexType)
 		return TYPE_DOUBLE;
 
 	return TYPE_OBJ_CL;
+}
+
+void Tree::TypeCastingAssign(DATA_TYPE firstType, DATA_TYPE secondType, LEX firstTypeName, LEX secondTypeName)
+{
+	if (firstType == TYPE_OBJ_CL)
+	{
+		if (secondType == TYPE_OBJ_CL)
+		{
+			if (firstTypeName == secondTypeName)
+			{
+				printf("\nКонтроль приведения типов: Присваивание объекту класса %s объекта класса %s ------ строка %d\n", firstTypeName, secondTypeName, scan->Get_Number_Line());
+			}
+			else
+			{
+				scan->PrintError("Попытка присваивания объекту класса \"" + string(firstTypeName) +  "\" объекта класса \"" + string(secondTypeName) + "\"", '\0', '\0');
+			}
+		}
+		else
+		{
+			scan->PrintError("Попытка присваивания объекту класса \"" + string(firstTypeName) + "\" значения типа \"" + string(DT_Name[secondType]) + "\"", '\0', '\0');
+		}
+	}
+	else if (secondType == TYPE_OBJ_CL)
+	{
+		scan->PrintError("Попытка присваивания переменной типа \"" + string(DT_Name[secondType]) + "\" объекта класса", '\0', '\0');
+	}
+	else
+	{
+		printf("\nКонтроль приведения типов: Приведение типа %s к типу %s (присваивание) --> %s ------ строка %d\n", scan->Get_Number_Line());
+	}
 }
 
 

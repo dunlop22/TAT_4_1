@@ -21,6 +21,8 @@ struct Node
 
 class Tree			//элемент семантической таблицы
 {
+	LEX DT_Name[3] = { "неопр.", "bool", "double" };
+
 private:
 	Node* node;		//информация об объекте таблицы
 	Tree* parent, * left, * right;		//родитель, левый и правый потомки
@@ -56,6 +58,7 @@ public:
 	Tree* SemGetClass(LEX a);		//найти в таблице класс с именем a и вернуть ссылку на соответсвующий элемент дерева
 	int DupControl(Tree* addr, LEX a);			//проверка идентификатора a на повторное описание внутри блока
 
-	DATA_TYPE GetType(int lexType);
+	DATA_TYPE GetTypebyLex(int lexType);
+	void TypeCastingAssign(DATA_TYPE firstType, DATA_TYPE secondType, LEX firstTypeName, LEX secondTypeName);	//приведение типов при присваивании
 };
 

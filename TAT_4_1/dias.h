@@ -17,15 +17,15 @@ private:
 	void H();		//return
 	void N();		//if
 	void O();		//Присваивание
-	void Q();		//Выражение
-	void R();		//Равенство
-	void U();		//И
-	void W();		//Сравнение
-	void X();		//Слагаемое
-	void Y();		//Множитель
-	void Z();		//Со знаком
-	void P();		//Вызов функции
-	void V();		//Равенство
+	void Q(DATA_TYPE* resType, LEX* resTypeName);		//Выражение
+	void R(DATA_TYPE* resType, LEX* resTypeName;		//Равенство
+	void U(DATA_TYPE* resType, LEX* resTypeName);		//И
+	void W(DATA_TYPE* resType, LEX* resTypeName);		//Сравнение
+	void X(DATA_TYPE* resType, LEX* resTypeName);		//Слагаемое
+	void Y(DATA_TYPE* resType, LEX* resTypeName);		//Множитель
+	void Z(DATA_TYPE* resType, LEX* resTypeName);		//Со знаком
+	void P(DATA_TYPE* resType, LEX* resTypeName);		//Вызов функции
+	void V(DATA_TYPE* resType, LEX* resTypeName);		//Равенство
 	int Look_Forward(int n);
 
 public:
