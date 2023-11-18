@@ -147,7 +147,7 @@ Tree* Tree::SemInclude(LEX a, OBJ_TYPE ot, DATA_TYPE t)
 	{
 		Tree* root = FindRoot();
 		root->Print();
-		scan->PrintError("Повторное описание идентификатора", a, '\0');
+		scan->PrintError("Повторное описание идентификатора");
 	}
 
 	Tree* v;
@@ -187,21 +187,21 @@ Tree* Tree::SemGetVar(LEX a)
 	{
 		Tree* root = FindRoot();
 		root->Print();
-		scan->PrintError("Отсутствует описание идентификатора", a, '\0');
+		scan->PrintError("Отсутствует описание идентификатора");
 	}
 
 	if (v->node->objType == ObjFunct)
 	{
 		Tree* root = FindRoot();
 		root->Print();
-		scan->PrintError("Неверное использование имени функции", a, '\0');
+		scan->PrintError("Неверное использование имени функции");
 	}
 
 	if (v->node->objType == ObjClass)
 	{
 		Tree* root = FindRoot();
 		root->Print();
-		scan->PrintError("Неверное использование имени класса", a, '\0');
+		scan->PrintError("Неверное использование имени класса");
 	}
 
 	return v;
@@ -232,14 +232,14 @@ Tree* Tree::SemGetFunct(LEX a)
 	{
 		Tree* root = FindRoot();
 		root->Print();
-		scan->PrintError("Отсутствует описание функции", a, '\0');
+		scan->PrintError("Отсутствует описание функции");
 	}
 
 	if (v->node->objType != ObjFunct)
 	{
 		Tree* root = FindRoot();
 		root->Print();
-		scan->PrintError("Идентификатор не является именем функции", a, '\0');
+		scan->PrintError("Идентификатор не является именем функции");
 	}
 
 	return v;
@@ -253,14 +253,14 @@ Tree* Tree::SemGetClass(LEX a)
 	{
 		Tree* root = FindRoot();
 		root->Print();
-		scan->PrintError("Отсутствует описание класса", a, '\0');
+		scan->PrintError("Отсутствует описание класса");
 	}
 
 	if (v->node->objType != ObjClass)
 	{
 		Tree* root = FindRoot();
 		root->Print();
-		scan->PrintError("Идентификатор не является именем класса", a, '\0');
+		scan->PrintError("Идентификатор не является именем класса");
 	}
 
 	return v;

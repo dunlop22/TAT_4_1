@@ -1,4 +1,4 @@
-class popa {bool t;};
+class pos {bool t;};
 
 bool func()
 {
@@ -6,9 +6,10 @@ print();
 	double a;
 	if (a == 1)
 	{
-print();
+		print();
 		bool r;
-		popa cl;
+		pos cl;
+		int k;
 		count();
 		cl.Set_qwert();
 		double rt = 5;
@@ -18,4 +19,3 @@ print();
 		bool k;
 	}
 }
-
