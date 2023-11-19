@@ -4,12 +4,16 @@
 
 class dias
 {
+	LEX Operation_Name[14] = { "|", "<", "<=", ">", ">=", "==",
+						"!=", "+", "-", "^", "&", "*", "/", "%" };
+
+
 private:
 	Scaner* scan;
 	Tree* root;
 
 	void D();		//Описание данных
-	void B();		//Имя
+	void B(DATA_TYPE* resType, LEX* resTypeName);		//Имя
 	void I();		//Описание класса
 	void F();		//Функция
 	void K();		//Составной оператор
@@ -18,7 +22,7 @@ private:
 	void N();		//if
 	void O();		//Присваивание
 	void Q(DATA_TYPE* resType, LEX* resTypeName);		//Выражение
-	void R(DATA_TYPE* resType, LEX* resTypeName;		//Равенство
+	void R(DATA_TYPE* resType, LEX* resTypeName);		//Равенство
 	void U(DATA_TYPE* resType, LEX* resTypeName);		//И
 	void W(DATA_TYPE* resType, LEX* resTypeName);		//Сравнение
 	void X(DATA_TYPE* resType, LEX* resTypeName);		//Слагаемое

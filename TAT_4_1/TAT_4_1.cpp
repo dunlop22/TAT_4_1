@@ -13,13 +13,6 @@ int main()
 
     scan = new Scaner("input.txt");   //Имя файла для чтения
 
-    /*do 
-    {
-        type = scan->FScaner(lex);
-        cout << lex << " - тип " << type << endl;
-    } while (type != TEnd);
-
-    */
 
     dias* diag = new dias(scan);
     diag->S();
@@ -33,7 +26,7 @@ int main()
     }
     else
     {
-        printf("Ошибки не найдены.\n\n");
+        printf("\n\nОшибки не найдены.\n\n");
     }
 
     printf("\n\n\nСЕМАНТИЧЕСКОЕ ДЕРЕВО\n\n");

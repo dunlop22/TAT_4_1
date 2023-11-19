@@ -21,7 +21,7 @@ int dias::Look_Forward(int n)
 	return nextType;
 }
 
-void dias::S()//ready
+void dias::S()
 {
 /*	ПРОГРАММА
 S = 
@@ -38,7 +38,6 @@ S =
 	   \/				|
 ------------------------------->
 */
-	LEX lex;
 	int type;
 	
 	type = Look_Forward(1);
@@ -79,7 +78,7 @@ void dias::PrintTree()
 	root->Print();
 }
 
-void dias::D()//ready
+void dias::D()
 {
 /* ОПИСАНИЕ ДАННЫХ
 D =
@@ -116,14 +115,19 @@ D =
 			scan->PrintError("Ожидался идентификатор", lex, '\0');
 		}
 
-		Tree* v = root->SemInclude(lex, ObjVar, semType);
+		Tree* v;
 
 		//проверка на существование идентификатора
 		//ссылка на поддерево
 		if (semType == TYPE_OBJ_CL)
 		{
+			v = root->SemInclude(lex, ObjVar, semType, type_lex);
 			Tree* cl = root->SemGetClass(type_lex);
 			v->SetRightT(cl->GetRight());
+		}
+		else
+		{
+			v = root->SemInclude(lex, ObjVar, semType);
 		}
 
 		type = Look_Forward(1);
@@ -134,7 +138,7 @@ D =
 
 			DATA_TYPE valType;
 			LEX className;
-			Q(&valType, className);
+			Q(&valType, &className);
 			root->TypeCastingAssign(semType, valType, type_lex, className);
 			type = Look_Forward(1);
 		}
@@ -150,7 +154,7 @@ D =
 }
 
 
-void dias::F()//ready
+void dias::F()
 /*	
 ФУНКЦИЯ =
 										   Имя
@@ -275,7 +279,7 @@ void dias::K()
 }
 
 
-void dias::M()//ready
+void dias::M()
 {
 /*
 ОПЕРАТОР =
@@ -305,6 +309,9 @@ void dias::M()//ready
 	LEX lex;
 	int type;
 
+	DATA_TYPE resType;
+	LEX resTypeName = "";
+
 	type = Look_Forward(1);
 
 	if (type == TFLS)
@@ -323,7 +330,7 @@ void dias::M()//ready
 		}
 		else if (type == TMain)
 		{
-			P();
+			P(&resType, &resTypeName);
 		}
 		else if (type == TIdent)
 		{
@@ -331,7 +338,7 @@ void dias::M()//ready
 			int line = scan->Get_Number_Line();
 			int pos = scan->Get_Position();
 
-			B();
+			B(&resType, &resTypeName);
 
 			type = Look_Forward(1);
 
@@ -341,7 +348,7 @@ void dias::M()//ready
 
 			if (type == TLS)
 			{
-				P();
+				P(&resType, &resTypeName);
 			}
 			else
 			{
@@ -359,7 +366,7 @@ void dias::M()//ready
 }
 
 
-void dias::H()//ready
+void dias::H()
 {
 /*
 return =
@@ -378,11 +385,20 @@ return =
 		scan->PrintError("Ожидался оператор \"return\"", lex, '\0');
 	}
 
-	Q();
+	DATA_TYPE ifType;
+	LEX ifClassName;
+
+	Q(&ifType, &ifClassName);
+
+	Tree* funct = root->GetCur()->GetCurrentFunct();
+	LEX functClassName;
+	funct->GetClassName(functClassName);
+
+	root->TypeCastingAssign(funct->GetType(), ifType, functClassName, ifClassName);
 }
 
 
-void dias::N()//ready
+void dias::N()
 {
 /*
 if =
@@ -412,7 +428,12 @@ if =
 		scan->PrintError("Ожидался символ \"(\"", lex, '\0');
 	}
 
-	Q();
+	DATA_TYPE ifType;
+	LEX ifClassName;
+
+	Q(&ifType, &ifClassName);
+
+	root->TypeCastingAssign(TYPE_BOOL, ifType, ifClassName, ifClassName);
 
 	type = scan->FScaner(lex);
 
@@ -433,7 +454,7 @@ if =
 
 }
 
-void dias::O()//ready
+void dias::O()
 {
 /*
 ПРИСВАИВАНИЕ =
@@ -445,7 +466,10 @@ void dias::O()//ready
 	LEX lex;
 	int type;
 
-	B();
+	DATA_TYPE firstType;
+	LEX firstClassName = "";
+
+	B(&firstType, &firstClassName);
 
 	type = scan->FScaner(lex);
 
@@ -454,10 +478,15 @@ void dias::O()//ready
 		scan->PrintError("Ожидался знак \"=\"", lex, '\0');
 	}
 
-	Q();
+	DATA_TYPE valType;
+	LEX valClassName = "";
+
+	Q(&valType, &valClassName);
+
+	root->TypeCastingAssign(firstType, valType, firstClassName, valClassName);
 }
 
-void dias::Q(DATA_TYPE* resType, LEX* resTypeName)//ready
+void dias::Q(DATA_TYPE* resType, LEX* resTypeName)
 {
 /*
 ВЫРАЖЕНИЕ =
@@ -473,17 +502,27 @@ void dias::Q(DATA_TYPE* resType, LEX* resTypeName)//ready
 
 	LEX lex;
 	int type;
-	R();
+
+	DATA_TYPE secondType;
+	LEX secondTypeName = "";
+
+	R(resType, resTypeName);
 	type = Look_Forward(1);
+
 	while (type == TOR)
 	{
+		int znak = type - 40;
+		if (znak > 10) znak--;
+
 		type = scan->FScaner(lex);
-		R();
+		R(&secondType, &secondTypeName);
 		type = Look_Forward(1);
+
+		*resType = root->TypeCasting(*resType, secondType, Operation_Name[znak]);
 	}
 }
 
-void dias::R(DATA_TYPE* resType, LEX* resTypeName)//ready
+void dias::R(DATA_TYPE* resType, LEX* resTypeName)
 {
 /*
 XOR =
@@ -500,17 +539,27 @@ XOR =
 
 	LEX lex;
 	int type;
-	U();
+
+	DATA_TYPE secondType;
+	LEX secondTypeName = "";
+
+	U(resType, resTypeName);
 	type = Look_Forward(1);
+
 	while (type == TXOR)
 	{
+		int znak = type - 40;
+		if (znak > 10) znak--;
+
 		type = scan->FScaner(lex);
-		U();
+		U(&secondType, &secondTypeName);
 		type = Look_Forward(1);
+
+		*resType = root->TypeCasting(*resType, secondType, Operation_Name[znak]);
 	}
 }
 
-void dias::V(DATA_TYPE* resType, LEX* resTypeName)//ready
+void dias::V(DATA_TYPE* resType, LEX* resTypeName)
 {
 /*
 									 ----  ==  -----
@@ -526,17 +575,28 @@ void dias::V(DATA_TYPE* resType, LEX* resTypeName)//ready
 
 	LEX lex;
 	int type;
-	W();
+
+	DATA_TYPE secondType;
+	LEX secondTypeName = "";
+
+	W(resType, resTypeName);
 	type = Look_Forward(1);
+
 	while (type == TEQ || type == TNEQ)
 	{
+		int znak = type - 40;
+		if (znak > 10) znak--;
+
 		type = scan->FScaner(lex);
-		W();
+		W(&secondType, &secondTypeName);
 		type = Look_Forward(1);
+
+		root->TypeCasting(*resType, secondType, Operation_Name[znak]);
+		*resType = TYPE_BOOL;
 	}
 }
 
-void dias::U(DATA_TYPE* resType, LEX* resTypeName)//ready
+void dias::U(DATA_TYPE* resType, LEX* resTypeName)
 {
 /*
 И =
@@ -552,17 +612,29 @@ void dias::U(DATA_TYPE* resType, LEX* resTypeName)//ready
 
 	LEX lex;
 	int type;
-	V();
+
+	DATA_TYPE secondType;
+	LEX secondTypeName = "";
+
+	V(resType, resTypeName);
 	type = Look_Forward(1);
+
 	while (type == TAnd)
 	{
+		int znak = type - 40;
+		if (znak > 10) znak--;
+
 		type = scan->FScaner(lex);
-		V();
+		V(&secondType, &secondTypeName);
+		root->CheckTypeBool(secondType);
+
 		type = Look_Forward(1);
+
+		*resType = root->TypeCasting(*resType, secondType, Operation_Name[znak]);
 	}
 }
 
-void dias::W(DATA_TYPE* resType, LEX* resTypeName)//ready
+void dias::W(DATA_TYPE* resType, LEX* resTypeName)
 {
 /*
 СРАВНЕНИЕ =
@@ -584,19 +656,28 @@ void dias::W(DATA_TYPE* resType, LEX* resTypeName)//ready
 	LEX lex;
 	int type;
 
-	X();
+	DATA_TYPE secondType;
+	LEX secondTypeName = "";
+
+	X(resType, resTypeName);
 
 	type = Look_Forward(1);
 
 	while (type == TLT || type == TGT || type == TLE || type == TGE)
 	{
+		int znak = type - 40;
+		if (znak > 10) znak--;
+
 		type = scan->FScaner(lex);
-		X();
+		X(&secondType, &secondTypeName);
 		type = Look_Forward(1);
+
+		root->TypeCasting(*resType, secondType, Operation_Name[znak]);
+		*resType = TYPE_BOOL;
 	}
 }
 
-void dias::X(DATA_TYPE* resType, LEX* resTypeName)//ready
+void dias::X(DATA_TYPE* resType, LEX* resTypeName)
 {
 /*
 СЛАГАЕМОЕ =
@@ -616,20 +697,28 @@ void dias::X(DATA_TYPE* resType, LEX* resTypeName)//ready
 	LEX lex;
 	int type;
 
-	Y();
+	DATA_TYPE secondType;
+	LEX secondTypeName = "";
+
+	Y(resType, resTypeName);
 
 	type = Look_Forward(1);
 
 	while (type == TPlus || type == TMinus)
 	{
+		int znak = type - 40;
+		if (znak > 10) znak--;
+
 		type = scan->FScaner(lex);
-		Y();
+		Y(&secondType, &secondTypeName);
 		type = Look_Forward(1);
+
+		*resType = root->TypeCasting(*resType, secondType, Operation_Name[znak]);
 	}
 
 }
 
-void dias::Y(DATA_TYPE* resType, LEX* resTypeName)//ready
+void dias::Y(DATA_TYPE* resType, LEX* resTypeName)
 {
 /*
 МНОЖИТЕЛЬ =
@@ -637,7 +726,7 @@ void dias::Y(DATA_TYPE* resType, LEX* resTypeName)//ready
 						  -------	 |				|
 					 ----|	 Z	 |---|----  /  -----|---
 					|	  -------	 |				|	|
-					|				  ----  =  -----	|
+					|				  ----  %  -----	|
      -------		\/									|
 ----|	Z	|-------------------------------------------------->
 	 -------
@@ -647,18 +736,33 @@ void dias::Y(DATA_TYPE* resType, LEX* resTypeName)//ready
 	LEX lex;
 	int type;
 
-	Z();
+	DATA_TYPE secondType;
+	LEX secondTypeName = "";
+
+	Z(resType, resTypeName);
+
 	type = Look_Forward(1);
 
 	while (type == TMult || type == TDiv || type == TMod)
 	{
+		int znak = type - 40;
+		if (znak > 10) znak--;
+
 		type = scan->FScaner(lex);
-		Z();
+		Z(&secondType, &secondTypeName);
+
+		if (type == TMod)
+		{
+			root->CheckTypeBool(secondType);
+		}
+
 		type = Look_Forward(1);
+
+		*resType = root->TypeCasting(*resType, secondType, Operation_Name[znak]);
 	}
 }
 
-void dias::Z(DATA_TYPE* resType, LEX* resTypeName)//ready
+void dias::Z(DATA_TYPE* resType, LEX* resTypeName)
 {
 /*			
 СО ЗНАКОМ =
@@ -700,7 +804,8 @@ void dias::Z(DATA_TYPE* resType, LEX* resTypeName)//ready
 	if (type == TLS)
 	{
 		type = scan->FScaner(lex);
-		Q();
+
+		Q(resType, resTypeName);
 
 		type = scan->FScaner(lex);
 
@@ -711,30 +816,47 @@ void dias::Z(DATA_TYPE* resType, LEX* resTypeName)//ready
 	}
 	else if (type == TMain)
 	{
-		P();
+		P(resType, resTypeName);
 	}
 	else if (type == TIdent)
 	{
-		B();
+		B(resType, resTypeName);
+
 		type = Look_Forward(1);
+
 		if (type == TLS)
 		{
-			P();
+			P(resType, resTypeName);
 		}
 	}
 	else
 	{
 		type = scan->FScaner(lex);
-		if (type != TConstInt && type != TConstFloat && type != TTrue && type != TFalse)
+
+		if (type == TConstInt)
+		{
+			*resType = TYPE_DOUBLE;
+		}
+		else if (type == TConstFloat)
+		{
+			*resType = TYPE_DOUBLE;
+		}
+		else if (type == TTrue)
+		{
+			*resType = TYPE_BOOL;
+		}
+		else if (type == TFalse)
+		{
+			*resType = TYPE_BOOL;
+		}
+		else
 		{
 			scan->PrintError("Ожидалось элементарное выражение", lex, '\0');
 		}
 	}
 }
 
-
-
-void dias::P(DATA_TYPE* resType, LEX* resTypeName)//ready
+void dias::P(DATA_TYPE* resType, LEX* resTypeName)
 {
 /*
 ВЫЗОВ ФУНКЦИИ =
@@ -754,11 +876,14 @@ void dias::P(DATA_TYPE* resType, LEX* resTypeName)//ready
 
 	if (type != TMain)
 	{
-		B();
+		B(resType, resTypeName);
 	}
 	else
 	{
 		type = scan->FScaner(lex);
+
+		Tree* funct = root->SemGetFunct(lex);
+		*resType = funct->GetType();
 	}
 	
 	type = scan->FScaner(lex);
@@ -776,7 +901,7 @@ void dias::P(DATA_TYPE* resType, LEX* resTypeName)//ready
 	}
 }
 
-void dias::B()//ready
+void dias::B(DATA_TYPE* resType, LEX* resTypeName)
 {
 /*
 ИМЯ =
@@ -787,7 +912,6 @@ void dias::B()//ready
 ----  a  ------------------------------------->
 */
 
-	//СТАЛО
 	LEX lex;
 	int type;
 	type = scan->FScaner(lex);
@@ -796,9 +920,26 @@ void dias::B()//ready
 	{
 		scan->PrintError("Ожидался идентификатор", lex, '\0');
 	}
+
+	//проверка на существование идентификатора, определение типа
+	Tree* ident = root->SemGetVar(lex);
+
+	*resType = ident->GetType();
+
+	if (*resType == TYPE_OBJ_CL)
+	{
+		ident->GetClassName(*resTypeName);
+	}
+
 	type = Look_Forward(1);
+
 	while (type == TTochka)
 	{
+		if (*resType != TYPE_OBJ_CL)
+		{
+			scan->PrintError("Объект не является экземпляром класса", lex, '\0');
+		}
+
 		type = scan->FScaner(lex);
 		type = scan->FScaner(lex);
 
@@ -806,11 +947,28 @@ void dias::B()//ready
 		{
 			scan->PrintError("Ожидался идентификатор", lex, '\0');
 		}
+
 		type = Look_Forward(1);
+
+		if (type == TLS)
+		{
+			ident = ident->FindRightLeftFunct(lex);
+		}
+		else
+		{
+			ident = ident->FindRightLeftVar(lex);
+		}
+
+		*resType = ident->GetType();
+
+		if (*resType == TYPE_OBJ_CL)
+		{
+			ident->GetClassName(*resTypeName);
+		}
 	}
 }
 
-void dias::I()//ready
+void dias::I()
 {
 /*
 ОПИСАНИЕ КЛАССА =

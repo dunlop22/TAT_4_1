@@ -17,6 +17,8 @@ struct Node
 	OBJ_TYPE objType;	//тип объекта
 	LEX id;				//идентификатор объекта
 	DATA_TYPE dataType;	//тип значения
+
+	LEX className;		//имя класса для объектов классов
 };
 
 class Tree			//элемент семантической таблицы
@@ -45,6 +47,9 @@ public:
 	Tree* FindUp(Tree* from, LEX id);
 	Tree* FindUp(LEX id);
 	Tree* FindUpOneLevel(Tree* from, LEX id);
+	Tree* FindRightLeft(Tree* from, LEX id);
+	Tree* FindRightLeftVar(LEX id);
+	Tree* FindRightLeftFunct(LEX id);
 
 	void Print();
 
@@ -52,6 +57,7 @@ public:
 	void SetCur(Tree* a);			//установить текущий узел дерева
 	Tree* GetCur();					//получить ссылку на текущий узел дерева
 	Tree* SemInclude(LEX a, OBJ_TYPE ot, DATA_TYPE t);		//занесение идентификатора a в таблицу с типом t
+	Tree* SemInclude(LEX a, OBJ_TYPE ot, DATA_TYPE t, LEX className);		//занесение идентификатора a в таблицу с типом t
 	Tree* SemNewLevel();			//новый уровень (для составного оператора)
 	Tree* SemGetVar(LEX a);		//найти в таблице переменную с именем a и вернуть ссылку на соответсвующий элемент дерева
 	Tree* SemGetFunct(LEX a);		//найти в таблице функцию с именем a и вернуть ссылку на соответсвующий элемент дерева
@@ -59,6 +65,15 @@ public:
 	int DupControl(Tree* addr, LEX a);			//проверка идентификатора a на повторное описание внутри блока
 
 	DATA_TYPE GetTypebyLex(int lexType);
+	DATA_TYPE GetType();
+
+	void GetClassName(LEX name);
+
+	Tree* GetCurrentFunct();
+
 	void TypeCastingAssign(DATA_TYPE firstType, DATA_TYPE secondType, LEX firstTypeName, LEX secondTypeName);	//приведение типов при присваивании
+	DATA_TYPE TypeCasting(DATA_TYPE firstType, DATA_TYPE secondType, LEX operation);
+
+	void CheckTypeBool(DATA_TYPE type);
 };
 

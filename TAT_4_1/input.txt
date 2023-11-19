@@ -1,17 +1,18 @@
-class pos {bool t;};
+class tk {bool t;};
+
+class pos {tk powl; double Set_qwert(){;}};
 
 bool func()
 {
-print();
+	tk pr;
+
 	double a;
 	if (a == 1)
 	{
-		print();
 		bool r;
 		pos cl;
-		int k;
-		count();
-		cl.Set_qwert();
+		cl.powl.t = 7;
+		pr = cl.powl;
 		double rt = 5;
 	}
 	else
