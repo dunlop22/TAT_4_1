@@ -921,8 +921,19 @@ void dias::B(DATA_TYPE* resType, LEX* resTypeName)
 		scan->PrintError("Ожидался идентификатор", lex, '\0');
 	}
 
+	type = Look_Forward(1);
+
 	//проверка на существование идентификатора, определение типа
-	Tree* ident = root->SemGetVar(lex);
+	Tree* ident;
+		
+	if (type == TLS)
+	{
+		ident = root->SemGetFunct(lex);
+	}
+	else
+	{
+		ident = root->SemGetVar(lex);
+	}
 
 	*resType = ident->GetType();
 
@@ -931,7 +942,6 @@ void dias::B(DATA_TYPE* resType, LEX* resTypeName)
 		ident->GetClassName(*resTypeName);
 	}
 
-	type = Look_Forward(1);
 
 	while (type == TTochka)
 	{
