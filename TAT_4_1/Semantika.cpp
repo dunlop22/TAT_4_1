@@ -412,12 +412,12 @@ void Tree::TypeCastingAssign(DATA_TYPE firstType, DATA_TYPE secondType, LEX firs
 			}
 			else
 			{
-				scan->PrintError("\nПопытка присваивания объекту класса \"" + string(firstTypeName) +  "\" объекта класса \"" + string(secondTypeName) + "\"", "\0", '\0');
+				scan->PrintError("Попытка присваивания объекту класса \"" + string(firstTypeName) +  "\" объекта класса \"" + string(secondTypeName) + "\"", "\0", '\0');
 			}
 		}
 		else
 		{
-			scan->PrintError("\nПопытка присваивания объекту класса \"" + string(firstTypeName) + "\" значения типа \"" + string(DT_Name[secondType]) + "\"", "\0", '\0');
+			scan->PrintError("Попытка присваивания объекту класса \"" + string(firstTypeName) + "\" значения типа \"" + string(DT_Name[secondType]) + "\"", "\0", '\0');
 		}
 	}
 	else if (secondType == TYPE_OBJ_CL)
