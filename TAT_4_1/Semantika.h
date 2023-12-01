@@ -22,6 +22,8 @@ struct DataS
 {
 	DATA_TYPE dataType;	//тип значения
 	DATA_VALUE dataValue; //значение
+
+	LEX className;		//имя класса для объектов классов
 };
 
 struct Node
@@ -30,8 +32,6 @@ struct Node
 	LEX id;				//идентификатор объекта
 
 	DataS data;
-
-	LEX className;		//имя класса для объектов классов
 };
 
 class Tree			//элемент семантической таблицы

@@ -9,7 +9,7 @@ Tree::Tree(Scaner* scan)
 
 	node = new Node();
 	node->objType = Empty;
-	node->dataType = NO_TYPE;
+	node->data.dataType = NO_TYPE;
 
 	parent = NULL;
 	left = NULL;
@@ -211,8 +211,8 @@ Tree* Tree::SemInclude(LEX a, OBJ_TYPE ot, DATA_TYPE t)
 
 	memcpy(n.id, a, strlen(a) + 1);
 	n.objType = ot;
-	n.dataType = t;
-	memcpy(n.className, "", strlen("") + 1);
+	n.data.dataType = t;
+	memcpy(n.data.className, "", strlen("") + 1);
 
 	if (this->node->objType == Empty && this->parent == NULL && this->left == NULL && this->right == NULL)
 		memcpy(node, &n, sizeof(Node));
@@ -248,10 +248,11 @@ Tree* Tree::SemInclude(LEX a, OBJ_TYPE ot, DATA_TYPE t, LEX className)
 	Tree* v;
 	Node n;
 
+
 	memcpy(n.id, a, strlen(a) + 1);
 	n.objType = ot;
-	n.dataType = t;
-	memcpy(n.className, className, strlen(className) + 1);
+	n.data.dataType = t;
+	memcpy(n.data.className, className, strlen(className) + 1);
 
 	if (this->node->objType == Empty && this->parent == NULL && this->left == NULL && this->right == NULL)
 		memcpy(node, &n, sizeof(Node));
@@ -381,12 +382,12 @@ DATA_TYPE Tree::GetTypebyLex(int lexType)
 
 DATA_TYPE Tree::GetType()
 {
-	return node->dataType;
+	return node->data.dataType;
 }
 
 void Tree::GetClassName(LEX name)
 {
-	strcpy(name, node->className);
+	strcpy(name, node->data.className);
 }
 
 Tree* Tree::GetCurrentFunct()

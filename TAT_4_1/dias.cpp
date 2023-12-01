@@ -136,10 +136,9 @@ D =
 		{
 			type = scan->FScaner(lex);
 
-			DATA_TYPE valType;
-			LEX className;
-			Q(&valType, &className);
-			root->TypeCastingAssign(semType, valType, type_lex, className);
+			DataS value;
+			Q(&value);
+			root->TypeCastingAssign(semType, value.dataType, type_lex, value.className);
 			type = Look_Forward(1);
 		}
 
@@ -309,8 +308,7 @@ void dias::M()
 	LEX lex;
 	int type;
 
-	DATA_TYPE resType;
-	LEX resTypeName = "";
+	DataS res;
 
 	type = Look_Forward(1);
 
@@ -330,7 +328,7 @@ void dias::M()
 		}
 		else if (type == TMain)
 		{
-			P(&resType, &resTypeName);
+			P(&res);
 		}
 		else if (type == TIdent)
 		{
@@ -338,7 +336,7 @@ void dias::M()
 			int line = scan->Get_Number_Line();
 			int pos = scan->Get_Position();
 
-			B(&resType, &resTypeName);
+			B(&res);
 
 			type = Look_Forward(1);
 
@@ -348,7 +346,7 @@ void dias::M()
 
 			if (type == TLS)
 			{
-				P(&resType, &resTypeName);
+				P(&res);
 			}
 			else
 			{
@@ -385,16 +383,15 @@ return =
 		scan->PrintError("Îæèäàëñÿ îïåðàòîð \"return\"", lex, '\0');
 	}
 
-	DATA_TYPE ifType;
-	LEX ifClassName;
+	DataS ifData;
 
-	Q(&ifType, &ifClassName);
+	Q(&ifData);
 
 	Tree* funct = root->GetCur()->GetCurrentFunct();
 	LEX functClassName;
 	funct->GetClassName(functClassName);
 
-	root->TypeCastingAssign(funct->GetType(), ifType, functClassName, ifClassName);
+	root->TypeCastingAssign(funct->GetType(), ifData.dataType, functClassName, ifData.className);
 }
 
 
@@ -428,12 +425,11 @@ if =
 		scan->PrintError("Îæèäàëñÿ ñèìâîë \"(\"", lex, '\0');
 	}
 
-	DATA_TYPE ifType;
-	LEX ifClassName;
+	DataS ifData;
 
-	Q(&ifType, &ifClassName);
+	Q(&ifData);
 
-	root->TypeCastingAssign(TYPE_BOOL, ifType, ifClassName, ifClassName);
+	root->TypeCastingAssign(TYPE_BOOL, ifData.dataType, ifData.className, ifData.className);
 
 	type = scan->FScaner(lex);
 
@@ -466,10 +462,9 @@ void dias::O()
 	LEX lex;
 	int type;
 
-	DATA_TYPE firstType;
-	LEX firstClassName = "";
+	DataS firstData;
 
-	B(&firstType, &firstClassName);
+	B(&firstData);
 
 	type = scan->FScaner(lex);
 
@@ -478,15 +473,14 @@ void dias::O()
 		scan->PrintError("Îæèäàëñÿ çíàê \"=\"", lex, '\0');
 	}
 
-	DATA_TYPE valType;
-	LEX valClassName = "";
+	DataS value;
 
-	Q(&valType, &valClassName);
+	Q(&value);
 
-	root->TypeCastingAssign(firstType, valType, firstClassName, valClassName);
+	root->TypeCastingAssign(firstData.dataType, value.dataType, firstData.className, value.className);
 }
 
-void dias::Q(DATA_TYPE* resType, LEX* resTypeName)
+void dias::Q(DataS* res)
 {
 /*
 ÂÛÐÀÆÅÍÈÅ =
@@ -503,10 +497,9 @@ void dias::Q(DATA_TYPE* resType, LEX* resTypeName)
 	LEX lex;
 	int type;
 
-	DATA_TYPE secondType;
-	LEX secondTypeName = "";
+	DataS secondData;
 
-	R(resType, resTypeName);
+	R(res);
 	type = Look_Forward(1);
 
 	while (type == TOR)
@@ -515,14 +508,14 @@ void dias::Q(DATA_TYPE* resType, LEX* resTypeName)
 		if (znak > 10) znak--;
 
 		type = scan->FScaner(lex);
-		R(&secondType, &secondTypeName);
+		R(&secondData);
 		type = Look_Forward(1);
 
-		*resType = root->TypeCasting(*resType, secondType, Operation_Name[znak]);
+		res->dataType = root->TypeCasting(res->dataType, secondData.dataType, Operation_Name[znak]);
 	}
 }
 
-void dias::R(DATA_TYPE* resType, LEX* resTypeName)
+void dias::R(DataS* res)
 {
 /*
 XOR =
@@ -540,10 +533,9 @@ XOR =
 	LEX lex;
 	int type;
 
-	DATA_TYPE secondType;
-	LEX secondTypeName = "";
+	DataS secondData;
 
-	U(resType, resTypeName);
+	U(res);
 	type = Look_Forward(1);
 
 	while (type == TXOR)
@@ -552,14 +544,14 @@ XOR =
 		if (znak > 10) znak--;
 
 		type = scan->FScaner(lex);
-		U(&secondType, &secondTypeName);
+		U(&secondData);
 		type = Look_Forward(1);
 
-		*resType = root->TypeCasting(*resType, secondType, Operation_Name[znak]);
+		res->dataType = root->TypeCasting(res->dataType, secondData.dataType, Operation_Name[znak]);
 	}
 }
 
-void dias::V(DATA_TYPE* resType, LEX* resTypeName)
+void dias::V(DataS* res)
 {
 /*
 									 ----  ==  -----
@@ -576,10 +568,10 @@ void dias::V(DATA_TYPE* resType, LEX* resTypeName)
 	LEX lex;
 	int type;
 
-	DATA_TYPE secondType;
-	LEX secondTypeName = "";
+	DataS secondData;
+	
 
-	W(resType, resTypeName);
+	W(res);
 	type = Look_Forward(1);
 
 	while (type == TEQ || type == TNEQ)
@@ -588,15 +580,15 @@ void dias::V(DATA_TYPE* resType, LEX* resTypeName)
 		if (znak > 10) znak--;
 
 		type = scan->FScaner(lex);
-		W(&secondType, &secondTypeName);
+		W(&secondData);
 		type = Look_Forward(1);
 
-		root->TypeCasting(*resType, secondType, Operation_Name[znak]);
-		*resType = TYPE_BOOL;
+		root->TypeCasting(res->dataType, secondData.dataType, Operation_Name[znak]);
+		res->dataType = TYPE_BOOL;
 	}
 }
 
-void dias::U(DATA_TYPE* resType, LEX* resTypeName)
+void dias::U(DataS* res)
 {
 /*
 È =
@@ -613,10 +605,10 @@ void dias::U(DATA_TYPE* resType, LEX* resTypeName)
 	LEX lex;
 	int type;
 
-	DATA_TYPE secondType;
-	LEX secondTypeName = "";
+	DataS secondData;
+	
 
-	V(resType, resTypeName);
+	V(res);
 	type = Look_Forward(1);
 
 	while (type == TAnd)
@@ -625,16 +617,16 @@ void dias::U(DATA_TYPE* resType, LEX* resTypeName)
 		if (znak > 10) znak--;
 
 		type = scan->FScaner(lex);
-		V(&secondType, &secondTypeName);
-		root->CheckTypeBool(secondType);
+		V(&secondData);
+		root->CheckTypeBool(secondData.dataType);
 
 		type = Look_Forward(1);
 
-		*resType = root->TypeCasting(*resType, secondType, Operation_Name[znak]);
+		res->dataType = root->TypeCasting(res->dataType, secondData.dataType, Operation_Name[znak]);
 	}
 }
 
-void dias::W(DATA_TYPE* resType, LEX* resTypeName)
+void dias::W(DataS* res)
 {
 /*
 ÑÐÀÂÍÅÍÈÅ =
@@ -656,10 +648,10 @@ void dias::W(DATA_TYPE* resType, LEX* resTypeName)
 	LEX lex;
 	int type;
 
-	DATA_TYPE secondType;
-	LEX secondTypeName = "";
+	DataS secondData;
+	
 
-	X(resType, resTypeName);
+	X(res);
 
 	type = Look_Forward(1);
 
@@ -669,15 +661,15 @@ void dias::W(DATA_TYPE* resType, LEX* resTypeName)
 		if (znak > 10) znak--;
 
 		type = scan->FScaner(lex);
-		X(&secondType, &secondTypeName);
+		X(&secondData);
 		type = Look_Forward(1);
 
-		root->TypeCasting(*resType, secondType, Operation_Name[znak]);
-		*resType = TYPE_BOOL;
+		root->TypeCasting(res->dataType, secondData.dataType, Operation_Name[znak]);
+		res->dataType = TYPE_BOOL;
 	}
 }
 
-void dias::X(DATA_TYPE* resType, LEX* resTypeName)
+void dias::X(DataS* res)
 {
 /*
 ÑËÀÃÀÅÌÎÅ =
@@ -697,10 +689,10 @@ void dias::X(DATA_TYPE* resType, LEX* resTypeName)
 	LEX lex;
 	int type;
 
-	DATA_TYPE secondType;
-	LEX secondTypeName = "";
+	DataS secondData;
+	
 
-	Y(resType, resTypeName);
+	Y(res);
 
 	type = Look_Forward(1);
 
@@ -710,15 +702,15 @@ void dias::X(DATA_TYPE* resType, LEX* resTypeName)
 		if (znak > 10) znak--;
 
 		type = scan->FScaner(lex);
-		Y(&secondType, &secondTypeName);
+		Y(&secondData);
 		type = Look_Forward(1);
 
-		*resType = root->TypeCasting(*resType, secondType, Operation_Name[znak]);
+		res->dataType = root->TypeCasting(res->dataType, secondData.dataType, Operation_Name[znak]);
 	}
 
 }
 
-void dias::Y(DATA_TYPE* resType, LEX* resTypeName)
+void dias::Y(DataS* res)
 {
 /*
 ÌÍÎÆÈÒÅËÜ =
@@ -736,10 +728,10 @@ void dias::Y(DATA_TYPE* resType, LEX* resTypeName)
 	LEX lex;
 	int type;
 
-	DATA_TYPE secondType;
-	LEX secondTypeName = "";
+	DataS secondData;
+	
 
-	Z(resType, resTypeName);
+	Z(res);
 
 	type = Look_Forward(1);
 
@@ -749,20 +741,20 @@ void dias::Y(DATA_TYPE* resType, LEX* resTypeName)
 		if (znak > 10) znak--;
 
 		type = scan->FScaner(lex);
-		Z(&secondType, &secondTypeName);
+		Z(&secondData);
 
 		if (type == TMod)
 		{
-			root->CheckTypeBool(secondType);
+			root->CheckTypeBool(secondData.dataType);
 		}
 
 		type = Look_Forward(1);
 
-		*resType = root->TypeCasting(*resType, secondType, Operation_Name[znak]);
+		res->dataType = root->TypeCasting(res->dataType, secondData.dataType, Operation_Name[znak]);
 	}
 }
 
-void dias::Z(DATA_TYPE* resType, LEX* resTypeName)
+void dias::Z(DataS* res)
 {
 /*			
 ÑÎ ÇÍÀÊÎÌ =
@@ -805,7 +797,7 @@ void dias::Z(DATA_TYPE* resType, LEX* resTypeName)
 	{
 		type = scan->FScaner(lex);
 
-		Q(resType, resTypeName);
+		Q(res);
 
 		type = scan->FScaner(lex);
 
@@ -816,17 +808,17 @@ void dias::Z(DATA_TYPE* resType, LEX* resTypeName)
 	}
 	else if (type == TMain)
 	{
-		P(resType, resTypeName);
+		P(res);
 	}
 	else if (type == TIdent)
 	{
-		B(resType, resTypeName);
+		B(res);
 
 		type = Look_Forward(1);
 
 		if (type == TLS)
 		{
-			P(resType, resTypeName);
+			P(res);
 		}
 	}
 	else
@@ -835,19 +827,19 @@ void dias::Z(DATA_TYPE* resType, LEX* resTypeName)
 
 		if (type == TConstInt)
 		{
-			*resType = TYPE_DOUBLE;
+			res->dataType = TYPE_DOUBLE;
 		}
 		else if (type == TConstFloat)
 		{
-			*resType = TYPE_DOUBLE;
+			res->dataType = TYPE_DOUBLE;
 		}
 		else if (type == TTrue)
 		{
-			*resType = TYPE_BOOL;
+			res->dataType = TYPE_BOOL;
 		}
 		else if (type == TFalse)
 		{
-			*resType = TYPE_BOOL;
+			res->dataType = TYPE_BOOL;
 		}
 		else
 		{
@@ -856,7 +848,7 @@ void dias::Z(DATA_TYPE* resType, LEX* resTypeName)
 	}
 }
 
-void dias::P(DATA_TYPE* resType, LEX* resTypeName)
+void dias::P(DataS* res)
 {
 /*
 ÂÛÇÎÂ ÔÓÍÊÖÈÈ =
@@ -876,14 +868,14 @@ void dias::P(DATA_TYPE* resType, LEX* resTypeName)
 
 	if (type != TMain)
 	{
-		B(resType, resTypeName);
+		B(res);
 	}
 	else
 	{
 		type = scan->FScaner(lex);
 
 		Tree* funct = root->SemGetFunct(lex);
-		*resType = funct->GetType();
+		res->dataType = funct->GetType();
 	}
 	
 	type = scan->FScaner(lex);
@@ -901,7 +893,7 @@ void dias::P(DATA_TYPE* resType, LEX* resTypeName)
 	}
 }
 
-void dias::B(DATA_TYPE* resType, LEX* resTypeName)
+void dias::B(DataS* res)
 {
 /*
 ÈÌß =
@@ -935,17 +927,17 @@ void dias::B(DATA_TYPE* resType, LEX* resTypeName)
 		ident = root->SemGetVar(lex);
 	}
 
-	*resType = ident->GetType();
+	res->dataType = ident->GetType();
 
-	if (*resType == TYPE_OBJ_CL)
+	if (res->dataType == TYPE_OBJ_CL)
 	{
-		ident->GetClassName(*resTypeName);
+		ident->GetClassName(res->className);
 	}
 
 
 	while (type == TTochka)
 	{
-		if (*resType != TYPE_OBJ_CL)
+		if (res->dataType != TYPE_OBJ_CL)
 		{
 			scan->PrintError("Îáúåêò íå ÿâëÿåòñÿ ýêçåìïëÿðîì êëàññà", lex, '\0');
 		}
@@ -969,11 +961,11 @@ void dias::B(DATA_TYPE* resType, LEX* resTypeName)
 			ident = ident->FindRightLeftVar(lex);
 		}
 
-		*resType = ident->GetType();
+		res->dataType = ident->GetType();
 
-		if (*resType == TYPE_OBJ_CL)
+		if (res->dataType == TYPE_OBJ_CL)
 		{
-			ident->GetClassName(*resTypeName);
+			ident->GetClassName(res->className);
 		}
 	}
 }

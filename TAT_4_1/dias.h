@@ -13,7 +13,7 @@ private:
 	Tree* root;
 
 	void D();		//Описание данных
-	void B(DATA_TYPE* resType, LEX* resTypeName);		//Имя
+	void B(DataS* res);		//Имя
 	void I();		//Описание класса
 	void F();		//Функция
 	void K();		//Составной оператор
@@ -21,15 +21,15 @@ private:
 	void H();		//return
 	void N();		//if
 	void O();		//Присваивание
-	void Q(DATA_TYPE* resType, LEX* resTypeName);		//Выражение
-	void R(DATA_TYPE* resType, LEX* resTypeName);		//Равенство
-	void U(DATA_TYPE* resType, LEX* resTypeName);		//И
-	void W(DATA_TYPE* resType, LEX* resTypeName);		//Сравнение
-	void X(DATA_TYPE* resType, LEX* resTypeName);		//Слагаемое
-	void Y(DATA_TYPE* resType, LEX* resTypeName);		//Множитель
-	void Z(DATA_TYPE* resType, LEX* resTypeName);		//Со знаком
-	void P(DATA_TYPE* resType, LEX* resTypeName);		//Вызов функции
-	void V(DATA_TYPE* resType, LEX* resTypeName);		//Равенство
+	void Q(DataS* res);		//Выражение
+	void R(DataS* res);		//Равенство
+	void U(DataS* res);		//И
+	void W(DataS* res);		//Сравнение
+	void X(DataS* res);		//Слагаемое
+	void Y(DataS* res);		//Множитель
+	void Z(DataS* res);		//Со знаком
+	void P(DataS* res);		//Вызов функции
+	void V(DataS* res);		//Равенство
 	int Look_Forward(int n);
 
 public:
