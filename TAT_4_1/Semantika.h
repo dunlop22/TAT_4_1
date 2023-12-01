@@ -12,11 +12,24 @@ enum OBJ_TYPE {
 
 enum DATA_TYPE { NO_TYPE = 0, TYPE_BOOL, TYPE_DOUBLE, TYPE_OBJ_CL};
 
+union DATA_VALUE 
+{
+	bool DataAsBool;
+	double DataAsDouble;
+};
+
+struct DataS 
+{
+	DATA_TYPE dataType;	//тип значения
+	DATA_VALUE dataValue; //значение
+};
+
 struct Node
 {
 	OBJ_TYPE objType;	//тип объекта
 	LEX id;				//идентификатор объекта
-	DATA_TYPE dataType;	//тип значения
+
+	DataS data;
 
 	LEX className;		//имя класса для объектов классов
 };
