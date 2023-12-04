@@ -81,10 +81,11 @@ public:
 	DATA_TYPE GetType();
 
 	void GetClassName(LEX name);
+	DATA_VALUE* GetValue();
 
 	Tree* GetCurrentFunct();
 
-	void TypeCastingAssign(DATA_TYPE firstType, DATA_TYPE secondType, LEX firstTypeName, LEX secondTypeName);	//приведение типов при присваивании
+	DataS TypeCastingAssign(DATA_TYPE firstType, DataS second, LEX firstTypeName, LEX secondTypeName);	//приведение типов при присваивании
 	DATA_TYPE TypeCasting(DATA_TYPE firstType, DATA_TYPE secondType, LEX operation);
 
 	void CheckTypeBool(DATA_TYPE type);

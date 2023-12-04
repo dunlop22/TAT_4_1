@@ -4,20 +4,14 @@ class pos {tk powl; double Set_qwert(){;}};
 
 bool func()
 {
-	tk pr;
-
-	double a;
-	if (a == 1)
-	{
-		bool r;
-		pos cl;
-		cl.powl.t = 7;
-		pr = cl.powl;
-		tk res;
-		double rt = 5;
-	}
-	else
-	{
-		bool k;
-	}
+	bool r;
+	pos cl;
+	cl.powl.t = 7;
+	r = false;
+	double rt = cl.powl.t;
+	r = 3.2;
+	rt = r;
+	rt = 3.8;
+	rt = true;
+	rt = 120;
 }

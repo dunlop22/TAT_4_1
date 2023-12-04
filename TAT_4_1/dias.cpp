@@ -138,8 +138,21 @@ D =
 
 			DataS value;
 			Q(&value);
-			root->TypeCastingAssign(semType, value.dataType, type_lex, value.className);
+			root->TypeCastingAssign(semType, value, type_lex, value.className);
 			type = Look_Forward(1);
+
+			if (v->GetType() == TYPE_DOUBLE)
+			{
+				v->GetValue()->DataAsDouble = value.dataValue.DataAsDouble;
+			}
+			else if (v->GetType() == TYPE_BOOL)
+			{
+				v->GetValue()->DataAsBool = value.dataValue.DataAsBool;
+			}
+			else
+			{
+				;
+			}
 		}
 
 	} while (type == TZapya);	//,
@@ -335,8 +348,17 @@ void dias::M()
 			int uk1 = scan->GetUK();
 			int line = scan->Get_Number_Line();
 			int pos = scan->Get_Position();
+			Tree* ident = NULL;
 
-			B(&res);
+			B(&ident);
+
+			res.dataType = ident->GetType();
+			res.dataValue = *ident->GetValue();
+
+			if (res.dataType == TYPE_OBJ_CL)
+			{
+				ident->GetClassName(res.className);
+			}
 
 			type = Look_Forward(1);
 
@@ -391,7 +413,7 @@ return =
 	LEX functClassName;
 	funct->GetClassName(functClassName);
 
-	root->TypeCastingAssign(funct->GetType(), ifData.dataType, functClassName, ifData.className);
+	root->TypeCastingAssign(funct->GetType(), ifData, functClassName, ifData.className);
 }
 
 
@@ -429,7 +451,7 @@ if =
 
 	Q(&ifData);
 
-	root->TypeCastingAssign(TYPE_BOOL, ifData.dataType, ifData.className, ifData.className);
+	root->TypeCastingAssign(TYPE_BOOL, ifData, ifData.className, ifData.className);
 
 	type = scan->FScaner(lex);
 
@@ -461,10 +483,17 @@ void dias::O()
 */
 	LEX lex;
 	int type;
-
+	Tree* ident = NULL;
 	DataS firstData;
 
-	B(&firstData);
+	B(&ident);
+
+	firstData.dataType = ident->GetType();
+
+	if (firstData.dataType == TYPE_OBJ_CL)
+	{
+		ident->GetClassName(firstData.className);
+	}
 
 	type = scan->FScaner(lex);
 
@@ -477,7 +506,17 @@ void dias::O()
 
 	Q(&value);
 
-	root->TypeCastingAssign(firstData.dataType, value.dataType, firstData.className, value.className);
+	value = root->TypeCastingAssign(firstData.dataType, value, firstData.className, value.className);
+
+	if (firstData.dataType == TYPE_BOOL)
+	{
+		ident->GetValue()->DataAsBool = value.dataValue.DataAsBool;
+
+	}
+	else if (firstData.dataType == TYPE_DOUBLE)
+	{
+		ident->GetValue()->DataAsDouble = value.dataValue.DataAsDouble;
+	}
 }
 
 void dias::Q(DataS* res)
@@ -812,7 +851,16 @@ void dias::Z(DataS* res)
 	}
 	else if (type == TIdent)
 	{
-		B(res);
+		Tree* ident = NULL;
+		B(&ident);
+
+		res->dataType = ident->GetType();
+		res->dataValue = *ident->GetValue();
+
+		if (res->dataType == TYPE_OBJ_CL)
+		{
+			ident->GetClassName(res->className);
+		}
 
 		type = Look_Forward(1);
 
@@ -828,23 +876,28 @@ void dias::Z(DataS* res)
 		if (type == TConstInt)
 		{
 			res->dataType = TYPE_DOUBLE;
+			res->dataValue.DataAsDouble = atoi(lex);
 		}
 		else if (type == TConstFloat)
 		{
 			res->dataType = TYPE_DOUBLE;
+			res->dataValue.DataAsDouble = atof(lex);
 		}
 		else if (type == TTrue)
 		{
 			res->dataType = TYPE_BOOL;
+			res->dataValue.DataAsBool = true;
 		}
 		else if (type == TFalse)
 		{
 			res->dataType = TYPE_BOOL;
+			res->dataValue.DataAsBool = false;
 		}
 		else
 		{
 			scan->PrintError("ќжидалось элементарное выражение", lex, '\0');
 		}
+
 	}
 }
 
@@ -863,12 +916,21 @@ void dias::P(DataS* res)
 */
 	LEX lex;
 	int type;
+	Tree* ident = NULL;
 
 	type = Look_Forward(1);
 
 	if (type != TMain)
 	{
-		B(res);
+		B(&ident);
+
+		res->dataType = ident->GetType();
+		res->dataValue = *ident->GetValue();
+
+		if (res->dataType == TYPE_OBJ_CL)
+		{
+			ident->GetClassName(res->className);
+		}
 	}
 	else
 	{
@@ -876,6 +938,19 @@ void dias::P(DataS* res)
 
 		Tree* funct = root->SemGetFunct(lex);
 		res->dataType = funct->GetType();
+
+		if (res->dataType == TYPE_DOUBLE)
+		{
+			res->dataValue.DataAsDouble = funct->GetValue()->DataAsDouble;
+		}
+		else if (res->dataType == TYPE_BOOL)
+		{
+			res->dataValue.DataAsBool = funct->GetValue()->DataAsBool;
+		}
+		else
+		{
+			;
+		}
 	}
 	
 	type = scan->FScaner(lex);
@@ -893,7 +968,7 @@ void dias::P(DataS* res)
 	}
 }
 
-void dias::B(DataS* res)
+void dias::B(Tree** ident)
 {
 /*
 »ћя =
@@ -916,28 +991,21 @@ void dias::B(DataS* res)
 	type = Look_Forward(1);
 
 	//проверка на существование идентификатора, определение типа
-	Tree* ident;
 		
 	if (type == TLS)
 	{
-		ident = root->SemGetFunct(lex);
+		*ident = root->SemGetFunct(lex);
 	}
 	else
 	{
-		ident = root->SemGetVar(lex);
+		*ident = root->SemGetVar(lex);
 	}
 
-	res->dataType = ident->GetType();
-
-	if (res->dataType == TYPE_OBJ_CL)
-	{
-		ident->GetClassName(res->className);
-	}
 
 
 	while (type == TTochka)
 	{
-		if (res->dataType != TYPE_OBJ_CL)
+		if ((*ident)->GetType() != TYPE_OBJ_CL)
 		{
 			scan->PrintError("ќбъект не €вл€етс€ экземпл€ром класса", lex, '\0');
 		}
@@ -954,18 +1022,11 @@ void dias::B(DataS* res)
 
 		if (type == TLS)
 		{
-			ident = ident->FindRightLeftFunct(lex);
+			*ident = (*ident)->FindRightLeftFunct(lex);
 		}
 		else
 		{
-			ident = ident->FindRightLeftVar(lex);
-		}
-
-		res->dataType = ident->GetType();
-
-		if (res->dataType == TYPE_OBJ_CL)
-		{
-			ident->GetClassName(res->className);
+			*ident = (*ident)->FindRightLeftVar(lex);
 		}
 	}
 }

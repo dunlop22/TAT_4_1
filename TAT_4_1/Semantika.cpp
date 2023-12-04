@@ -390,6 +390,11 @@ void Tree::GetClassName(LEX name)
 	strcpy(name, node->data.className);
 }
 
+DATA_VALUE* Tree::GetValue()
+{
+	return &(node->data.dataValue);
+}
+
 Tree* Tree::GetCurrentFunct()
 {
 	if (parent == NULL)
@@ -401,11 +406,11 @@ Tree* Tree::GetCurrentFunct()
 	return parent->GetCurrentFunct();
 }
 
-void Tree::TypeCastingAssign(DATA_TYPE firstType, DATA_TYPE secondType, LEX firstTypeName, LEX secondTypeName)
+DataS Tree::TypeCastingAssign(DATA_TYPE firstType, DataS second, LEX firstTypeName, LEX secondTypeName)
 {
 	if (firstType == TYPE_OBJ_CL)
 	{
-		if (secondType == TYPE_OBJ_CL)
+		if (second.dataType == TYPE_OBJ_CL)
 		{
 			if (strcmp(firstTypeName, secondTypeName) == 0)
 			{
@@ -418,16 +423,47 @@ void Tree::TypeCastingAssign(DATA_TYPE firstType, DATA_TYPE secondType, LEX firs
 		}
 		else
 		{
-			scan->PrintError("Попытка присваивания объекту класса \"" + string(firstTypeName) + "\" значения типа \"" + string(DT_Name[secondType]) + "\"", "\0", '\0');
+			scan->PrintError("Попытка присваивания объекту класса \"" + string(firstTypeName) + "\" значения типа \"" + string(DT_Name[second.dataType]) + "\"", "\0", '\0');
 		}
 	}
-	else if (secondType == TYPE_OBJ_CL)
+	else if (second.dataType == TYPE_OBJ_CL)
 	{
-		scan->PrintError("\nПопытка присваивания переменной типа \"" + string(DT_Name[secondType]) + "\" объекта класса", "\0", '\0');
+		scan->PrintError("\nПопытка присваивания переменной типа \"" + string(DT_Name[firstType]) + "\" объекта класса", "\0", '\0');
 	}
 	else
 	{
-		printf("\nКонтроль приведения типов: Приведение типа %s к типу %s --> %s ------ строка %d\n", DT_Name[secondType], DT_Name[firstType], DT_Name[firstType], scan->Get_Number_Line());
+		printf("\nКонтроль приведения типов: Приведение типа %s к типу %s (присваивание) --> %s ------ строка %d\n", DT_Name[second.dataType], DT_Name[firstType], DT_Name[firstType], scan->Get_Number_Line());
+
+		if (firstType == TYPE_BOOL)
+		{
+			if (second.dataType != TYPE_BOOL)
+			{
+				if (second.dataType == TYPE_DOUBLE)
+				{
+					second.dataValue.DataAsBool = second.dataValue.DataAsDouble;
+				}
+
+				second.dataType = TYPE_BOOL;
+			}
+
+			printf("\tТип: bool\tЗначение: %d", second.dataValue.DataAsBool);
+		}
+		else if (firstType == TYPE_DOUBLE)
+		{
+			if (second.dataType != TYPE_DOUBLE)
+			{
+				if (second.dataType == TYPE_BOOL)
+				{
+					second.dataValue.DataAsDouble = second.dataValue.DataAsBool;
+				}
+
+				second.dataType = TYPE_DOUBLE;
+			}
+
+			printf("\tТип: double\tЗначение: %f", second.dataValue.DataAsDouble);
+		}
+
+		return second;
 	}
 }
 

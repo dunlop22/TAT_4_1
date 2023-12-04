@@ -167,7 +167,8 @@ start:
 
 		if (t[uk] == '.')
 		{
-			lex[i++] = t[uk++];
+			lex[i++] = ',';
+			t[uk++];
 			position = position + 1;
 			goto CONT;
 		}

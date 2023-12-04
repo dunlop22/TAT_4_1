@@ -13,7 +13,7 @@ private:
 	Tree* root;
 
 	void D();		//Описание данных
-	void B(DataS* res);		//Имя
+	void B(Tree** ident);		//Имя
 	void I();		//Описание класса
 	void F();		//Функция
 	void K();		//Составной оператор
