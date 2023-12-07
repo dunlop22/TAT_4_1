@@ -147,6 +147,28 @@ Tree* Tree::FindRightLeftFunct(LEX id)
 	return v;
 }
 
+void Tree::CleanTree()
+{
+	if (left != NULL)
+	{
+		left->CleanTree();
+		delete left;
+		left = NULL;
+	}
+
+	CleanChild();
+}
+
+void Tree::CleanChild()
+{
+	if (right != NULL)
+	{
+		right->CleanTree();
+		delete right;
+		right = NULL;
+	}
+}
+
 void Tree::Print()
 {
 	if (node->objType != Empty)

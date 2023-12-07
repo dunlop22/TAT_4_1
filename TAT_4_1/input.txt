@@ -1,4 +1,4 @@
-class tk {bool t;};
+/*class tk {bool t;};
 
 class pos {tk powl; double Set_qwert(){;}};
 
@@ -14,4 +14,10 @@ bool func()
 	rt = 3.8;
 	rt = true;
 	rt = 120;
-}
+}*/
+
+class a {bool b;};
+
+bool abc()
+{bool c;
+bool j;}

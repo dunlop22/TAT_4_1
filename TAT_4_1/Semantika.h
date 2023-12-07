@@ -64,6 +64,9 @@ public:
 	Tree* FindRightLeftVar(LEX id);
 	Tree* FindRightLeftFunct(LEX id);
 
+	void CleanTree();
+	void CleanChild();
+
 	void Print();
 
 	//Семантичексие подпрограммы

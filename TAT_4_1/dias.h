@@ -33,8 +33,15 @@ private:
 	int Look_Forward(int n);
 
 public:
+	bool DEBUG = true;
 	dias(Scaner* s) { scan = s; root = new	Tree(scan); }
-	~dias() {}
+	~dias() {
+		if (DEBUG) {
+			printf("ÎÑÂÎÁÎÆÄÅÍÈÅ ÏÀÌ‗ÒÈ - ךמםוצ ןנמדנאללû\n");
+		}
+		root->CleanTree();
+		delete root;
+	}
 	void S();		//Ïנמדנאללא
 
 	void PrintTree();

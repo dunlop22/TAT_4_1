@@ -115,6 +115,8 @@ D =
 			scan->PrintError("Ожидался идентификатор", lex, '\0');
 		}
 
+		printf("\n\nОписание переменной: %s", lex);
+
 		Tree* v;
 
 		//проверка на существование идентификатора
@@ -153,6 +155,12 @@ D =
 			{
 				;
 			}
+		}
+
+		if (DEBUG)
+		{
+			printf("\n\nСЕМАНТИЧЕСКОЕ ДЕРЕВО\n\n");
+			PrintTree();
 		}
 
 	} while (type == TZapya);	//,
@@ -198,6 +206,8 @@ void dias::F()
 	{
 		scan->PrintError("Ожидалось имя функции", lex, '\0');
 	}
+
+	printf("\n\nОписание функции: %s", lex);
 
 	Tree* v = root->SemInclude(lex, ObjFunct, semType);
 
@@ -288,6 +298,15 @@ void dias::K()
 	}
 
 	root->SetCur(v);
+
+	v->CleanChild();
+	if (DEBUG)
+	{
+		printf("\n\nОСВОБОЖДЕНИЕ ПАМЯТИ - конец составного оператора");
+
+		printf("\n\nСЕМАНТИЧЕСКОЕ ДЕРЕВО\n\n");
+		PrintTree();
+	}
 }
 
 
@@ -1065,6 +1084,8 @@ void dias::I()
 	{
 		scan->PrintError("Ожидался идентификатор", lex, '\0');
 	}
+
+	printf("\n\nОписание класса: %s", lex);
 
 	Tree* v = root->SemInclude(lex, ObjClass, NO_TYPE);
 
