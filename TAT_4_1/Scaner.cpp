@@ -284,16 +284,18 @@ start:
 		position = position + 1;
 		return TMod;
 	}
-	else if (t[uk] == '&')
+	else if (t[uk] == '&' && t[uk + 1] == '&')
 	{
 		lex[i++] = t[uk++];
-		position = position + 1;
+		lex[i++] = t[uk++];
+		position = position + 2;
 		return TAnd;
 	}
-	else if (t[uk] == '|')
+	else if (t[uk] == '|' && t[uk + 1] == '|')
 	{
 		lex[i++] = t[uk++];
-		position = position + 1;
+		lex[i++] = t[uk++];
+		position = position + 2;
 		return TOR;
 	}
 	else if (t[uk] == '^')

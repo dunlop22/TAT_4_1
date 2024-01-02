@@ -24,4 +24,4 @@ bool abc()
 a dor;
 func();
 bool j = true;
-j = j & true | false;}
+j = j && true || false;}
