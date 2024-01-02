@@ -126,7 +126,6 @@ D =
 			v = root->SemInclude(lex, ObjVar, semType, type_lex);
 			Tree* cl = root->SemGetClass(type_lex);
 			v->MakeClassCopy(cl);
-			//v->SetRightT(cl->GetRight());
 		}
 		else
 		{
@@ -561,16 +560,23 @@ void dias::Q(DataS* res)
 	R(res);
 	type = Look_Forward(1);
 
+	if (type == TOR)
+	{
+		root->CheckTypeBool(res->dataType);
+	}
+
 	while (type == TOR)
 	{
 		int znak = type - 40;
+		int operation = type;
 		if (znak > 10) znak--;
 
 		type = scan->FScaner(lex);
 		R(&secondData);
+		root->CheckTypeBool(secondData.dataType);
 		type = Look_Forward(1);
 
-		res->dataType = root->TypeCasting(res->dataType, secondData.dataType, Operation_Name[znak]);
+		root->TypeCasting(res, secondData, operation, Operation_Name[znak]);
 	}
 }
 
@@ -597,16 +603,23 @@ XOR =
 	U(res);
 	type = Look_Forward(1);
 
+	if (type == TOR)
+	{
+		root->CheckTypeBool(res->dataType);
+	}
+
 	while (type == TXOR)
 	{
 		int znak = type - 40;
+		int operation = type;
 		if (znak > 10) znak--;
 
 		type = scan->FScaner(lex);
 		U(&secondData);
+		root->CheckTypeBool(secondData.dataType);
 		type = Look_Forward(1);
 
-		res->dataType = root->TypeCasting(res->dataType, secondData.dataType, Operation_Name[znak]);
+		root->TypeCasting(res, secondData, operation, Operation_Name[znak]);
 	}
 }
 
@@ -636,14 +649,14 @@ void dias::V(DataS* res)
 	while (type == TEQ || type == TNEQ)
 	{
 		int znak = type - 40;
+		int operation = type;
 		if (znak > 10) znak--;
 
 		type = scan->FScaner(lex);
 		W(&secondData);
 		type = Look_Forward(1);
 
-		root->TypeCasting(res->dataType, secondData.dataType, Operation_Name[znak]);
-		res->dataType = TYPE_BOOL;
+		root->TypeCasting(res, secondData, operation, Operation_Name[znak]);
 	}
 }
 
@@ -670,9 +683,15 @@ void dias::U(DataS* res)
 	V(res);
 	type = Look_Forward(1);
 
+	if (type == TAnd)
+	{
+		root->CheckTypeBool(res->dataType);
+	}
+
 	while (type == TAnd)
 	{
 		int znak = type - 40;
+		int operation = type;
 		if (znak > 10) znak--;
 
 		type = scan->FScaner(lex);
@@ -681,7 +700,7 @@ void dias::U(DataS* res)
 
 		type = Look_Forward(1);
 
-		res->dataType = root->TypeCasting(res->dataType, secondData.dataType, Operation_Name[znak]);
+		root->TypeCasting(res, secondData, operation, Operation_Name[znak]);
 	}
 }
 
@@ -717,14 +736,14 @@ void dias::W(DataS* res)
 	while (type == TLT || type == TGT || type == TLE || type == TGE)
 	{
 		int znak = type - 40;
+		int operation = type;
 		if (znak > 10) znak--;
 
 		type = scan->FScaner(lex);
 		X(&secondData);
 		type = Look_Forward(1);
 
-		root->TypeCasting(res->dataType, secondData.dataType, Operation_Name[znak]);
-		res->dataType = TYPE_BOOL;
+		root->TypeCasting(res, secondData, operation, Operation_Name[znak]);
 	}
 }
 
@@ -758,13 +777,14 @@ void dias::X(DataS* res)
 	while (type == TPlus || type == TMinus)
 	{
 		int znak = type - 40;
+		int operation = type;
 		if (znak > 10) znak--;
 
 		type = scan->FScaner(lex);
 		Y(&secondData);
 		type = Look_Forward(1);
 
-		res->dataType = root->TypeCasting(res->dataType, secondData.dataType, Operation_Name[znak]);
+		root->TypeCasting(res, secondData, operation, Operation_Name[znak]);
 	}
 
 }
@@ -794,9 +814,15 @@ void dias::Y(DataS* res)
 
 	type = Look_Forward(1);
 
+	if (type == TMod)
+	{
+		root->CheckTypeBool(res->dataType);
+	}
+
 	while (type == TMult || type == TDiv || type == TMod)
 	{
 		int znak = type - 40;
+		int operation = type;
 		if (znak > 10) znak--;
 
 		type = scan->FScaner(lex);
@@ -809,7 +835,7 @@ void dias::Y(DataS* res)
 
 		type = Look_Forward(1);
 
-		res->dataType = root->TypeCasting(res->dataType, secondData.dataType, Operation_Name[znak]);
+		root->TypeCasting(res, secondData, operation, Operation_Name[znak]);
 	}
 }
 

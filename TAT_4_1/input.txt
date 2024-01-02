@@ -8,7 +8,7 @@ bool func()
 	double rt;
 	r = -3.2;
 	rt = r;
-	rt = -3.8;
+	rt = -3.8 + r * 3;
 	pos boba;
 	tk kat;
 	kat.t = -false;
@@ -23,4 +23,5 @@ bool abc()
 {bool c = false;
 a dor;
 func();
-bool j;}
+bool j = true;
+j = j & true | false;}

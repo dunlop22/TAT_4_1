@@ -91,8 +91,9 @@ public:
 
 	Tree* GetCurrentFunct();
 
+	void TypeCasting(DataS* firstData, DataS secondData, int operation, LEX operationName);
 	DataS TypeCastingAssign(DATA_TYPE firstType, DataS second, LEX firstTypeName, LEX secondTypeName);	//приведение типов при присваивании
-	DATA_TYPE TypeCasting(DATA_TYPE firstType, DATA_TYPE secondType, LEX operation);
+	//DATA_TYPE TypeCasting(DATA_TYPE firstType, DATA_TYPE secondType, LEX operation);
 
 	void CheckTypeBool(DATA_TYPE type);
 };

@@ -284,6 +284,24 @@ start:
 		position = position + 1;
 		return TMod;
 	}
+	else if (t[uk] == '&')
+	{
+		lex[i++] = t[uk++];
+		position = position + 1;
+		return TAnd;
+	}
+	else if (t[uk] == '|')
+	{
+		lex[i++] = t[uk++];
+		position = position + 1;
+		return TOR;
+	}
+	else if (t[uk] == '^')
+	{
+		lex[i++] = t[uk++];
+		position = position + 1;
+		return TXOR;
+	}
 	else if (t[uk] == '=')
 	{
 		lex[i++] = t[uk++];

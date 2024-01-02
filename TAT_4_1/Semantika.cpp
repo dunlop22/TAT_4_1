@@ -463,6 +463,241 @@ Tree* Tree::GetCurrentFunct()
 	return parent->GetCurrentFunct();
 }
 
+void Tree::TypeCasting(DataS* firstData, DataS secondData, int operation, LEX operationName)
+{
+	DATA_TYPE resType = firstData->dataType;
+
+	if (firstData->dataType == TYPE_OBJ_CL || secondData.dataType == TYPE_OBJ_CL)
+		scan->PrintError("Объект является экземпляром класса - недопустимо проведение операции", "\0", '\0');
+
+	if (resType != secondData.dataType)
+	{
+		if (resType == NO_TYPE || secondData.dataType == NO_TYPE)
+			resType = NO_TYPE;
+		else if (resType == TYPE_DOUBLE || secondData.dataType == TYPE_DOUBLE)
+			resType = TYPE_DOUBLE;
+		else if (resType == TYPE_BOOL || secondData.dataType == TYPE_BOOL)
+			resType = TYPE_BOOL;
+		else
+			scan->PrintError("Ошибка приведения типов", "\0", '\0');
+	}
+
+	printf("\nПриведение типов %s и %s (%s) --> %s ------ строка %d\n", DT_Name[firstData->dataType], DT_Name[secondData.dataType], operationName, DT_Name[resType], scan->Get_Number_Line());
+
+	if (firstData->dataType != resType)
+	{
+		if (resType == TYPE_DOUBLE)
+		{
+			if (firstData->dataType == TYPE_BOOL)
+			{
+				firstData->dataValue.DataAsDouble = firstData->dataValue.DataAsBool;
+			}
+		}
+		else
+		{
+			if (firstData->dataType == TYPE_DOUBLE)
+			{
+				firstData->dataValue.DataAsBool = firstData->dataValue.DataAsBool;
+			}
+		}
+	}
+
+	firstData->dataType = resType;
+
+	if (resType == TYPE_DOUBLE)
+	{
+		if (secondData.dataType == TYPE_DOUBLE)
+		{
+			//L - слагаемое
+			if (operation == TPlus)
+				firstData->dataValue.DataAsDouble += secondData.dataValue.DataAsDouble;
+			else if (operation == TMinus)
+				firstData->dataValue.DataAsDouble -= secondData.dataValue.DataAsDouble;
+
+			//M - множитель
+			else if (operation == TMult)
+				firstData->dataValue.DataAsDouble *= secondData.dataValue.DataAsDouble;
+			else if (operation == TDiv)
+				firstData->dataValue.DataAsDouble /= secondData.dataValue.DataAsDouble;
+
+			//Z - сравнение
+			else if (operation == TLT)
+			{
+				firstData->dataValue.DataAsBool = firstData->dataValue.DataAsDouble < secondData.dataValue.DataAsDouble;
+				firstData->dataType = TYPE_BOOL;
+			}
+			else if (operation == TGT)
+			{
+				firstData->dataValue.DataAsBool = firstData->dataValue.DataAsDouble > secondData.dataValue.DataAsDouble;
+				firstData->dataType = TYPE_BOOL;
+			}
+			else if (operation == TLE)
+			{
+				firstData->dataValue.DataAsBool = firstData->dataValue.DataAsDouble <= secondData.dataValue.DataAsDouble;
+				firstData->dataType = TYPE_BOOL;
+			}
+			else if (operation == TGE)
+			{
+				firstData->dataValue.DataAsBool = firstData->dataValue.DataAsDouble >= secondData.dataValue.DataAsDouble;
+				firstData->dataType = TYPE_BOOL;
+			}
+
+			//V - выражение
+			else if (operation == TEQ)
+			{
+				firstData->dataValue.DataAsBool = firstData->dataValue.DataAsDouble == secondData.dataValue.DataAsDouble;
+				firstData->dataType = TYPE_BOOL;
+			}
+			else if (operation == TNEQ)
+			{
+				firstData->dataValue.DataAsBool = firstData->dataValue.DataAsDouble != secondData.dataValue.DataAsDouble;
+				firstData->dataType = TYPE_BOOL;
+			}
+		}
+		else if (secondData.dataType == TYPE_BOOL)
+		{
+			if (operation == TPlus)
+				firstData->dataValue.DataAsDouble += secondData.dataValue.DataAsBool;
+			else if (operation == TMinus)
+				firstData->dataValue.DataAsDouble -= secondData.dataValue.DataAsBool;
+			else if (operation == TMult)
+				firstData->dataValue.DataAsDouble *= secondData.dataValue.DataAsBool;
+			else if (operation == TDiv)
+				firstData->dataValue.DataAsDouble /= secondData.dataValue.DataAsBool;
+
+			else if (operation == TLT)
+			{
+				firstData->dataValue.DataAsBool = firstData->dataValue.DataAsDouble < secondData.dataValue.DataAsBool;
+				firstData->dataType = TYPE_BOOL;
+			}
+			else if (operation == TGT)
+			{
+				firstData->dataValue.DataAsBool = firstData->dataValue.DataAsDouble > secondData.dataValue.DataAsBool;
+				firstData->dataType = TYPE_BOOL;
+			}
+			else if (operation == TLE)
+			{
+				firstData->dataValue.DataAsBool = firstData->dataValue.DataAsDouble <= secondData.dataValue.DataAsBool;
+				firstData->dataType = TYPE_BOOL;
+			}
+			else if (operation == TGE)
+			{
+				firstData->dataValue.DataAsBool = firstData->dataValue.DataAsDouble >= secondData.dataValue.DataAsBool;
+				firstData->dataType = TYPE_BOOL;
+			}
+
+			else if (operation == TEQ)
+			{
+				firstData->dataValue.DataAsBool = firstData->dataValue.DataAsDouble == secondData.dataValue.DataAsBool;
+				firstData->dataType = TYPE_BOOL;
+			}
+			else if (operation == TNEQ)
+			{
+				firstData->dataValue.DataAsBool = firstData->dataValue.DataAsDouble != secondData.dataValue.DataAsBool;
+				firstData->dataType = TYPE_BOOL;
+			}
+		}
+	}
+	else if (resType == TYPE_BOOL)
+	{
+		if (secondData.dataType == TYPE_DOUBLE)
+		{
+			if (operation == TPlus)
+				firstData->dataValue.DataAsBool += secondData.dataValue.DataAsDouble;
+			else if (operation == TMinus)
+				firstData->dataValue.DataAsBool -= secondData.dataValue.DataAsDouble;
+			else if (operation == TMult)
+				firstData->dataValue.DataAsBool *= secondData.dataValue.DataAsDouble;
+			else if (operation == TDiv)
+				firstData->dataValue.DataAsBool /= secondData.dataValue.DataAsDouble;
+
+			else if (operation == TLT)
+			{
+				firstData->dataValue.DataAsBool = firstData->dataValue.DataAsBool < secondData.dataValue.DataAsDouble;
+				firstData->dataType = TYPE_BOOL;
+			}
+			else if (operation == TGT)
+			{
+				firstData->dataValue.DataAsBool = firstData->dataValue.DataAsBool > secondData.dataValue.DataAsDouble;
+				firstData->dataType = TYPE_BOOL;
+			}
+			else if (operation == TLE)
+			{
+				firstData->dataValue.DataAsBool = firstData->dataValue.DataAsBool <= secondData.dataValue.DataAsDouble;
+				firstData->dataType = TYPE_BOOL;
+			}
+			else if (operation == TGE)
+			{
+				firstData->dataValue.DataAsBool = firstData->dataValue.DataAsBool >= secondData.dataValue.DataAsDouble;
+				firstData->dataType = TYPE_BOOL;
+			}
+
+			else if (operation == TEQ)
+			{
+				firstData->dataValue.DataAsBool = firstData->dataValue.DataAsBool == secondData.dataValue.DataAsDouble;
+				firstData->dataType = TYPE_BOOL;
+			}
+			else if (operation == TNEQ)
+			{
+				firstData->dataValue.DataAsBool = firstData->dataValue.DataAsBool != secondData.dataValue.DataAsDouble;
+				firstData->dataType = TYPE_BOOL;
+			}
+		}
+		else if (secondData.dataType == TYPE_BOOL)
+		{
+			if (operation == TPlus)
+				firstData->dataValue.DataAsBool += secondData.dataValue.DataAsBool;
+			else if (operation == TMinus)
+				firstData->dataValue.DataAsBool -= secondData.dataValue.DataAsBool;
+			else if (operation == TMult)
+				firstData->dataValue.DataAsBool *= secondData.dataValue.DataAsBool;
+			else if (operation == TDiv)
+				firstData->dataValue.DataAsBool /= secondData.dataValue.DataAsBool;
+			else if (operation == TMod)
+				firstData->dataValue.DataAsBool %= secondData.dataValue.DataAsBool;
+			else if (operation == TAnd)
+				firstData->dataValue.DataAsBool &= secondData.dataValue.DataAsBool;
+			else if (operation == TOR)
+				firstData->dataValue.DataAsBool |= secondData.dataValue.DataAsBool;
+			else if (operation == TXOR)
+				firstData->dataValue.DataAsBool ^= secondData.dataValue.DataAsBool;
+
+			else if (operation == TLT)
+			{
+				firstData->dataValue.DataAsBool = firstData->dataValue.DataAsBool < secondData.dataValue.DataAsBool;
+				firstData->dataType = TYPE_BOOL;
+			}
+			else if (operation == TGT)
+			{
+				firstData->dataValue.DataAsBool = firstData->dataValue.DataAsBool > secondData.dataValue.DataAsBool;
+				firstData->dataType = TYPE_BOOL;
+			}
+			else if (operation == TLE)
+			{
+				firstData->dataValue.DataAsBool = firstData->dataValue.DataAsBool <= secondData.dataValue.DataAsBool;
+				firstData->dataType = TYPE_BOOL;
+			}
+			else if (operation == TGE)
+			{
+				firstData->dataValue.DataAsBool = firstData->dataValue.DataAsBool >= secondData.dataValue.DataAsBool;
+				firstData->dataType = TYPE_BOOL;
+			}
+
+			else if (operation == TEQ)
+			{
+				firstData->dataValue.DataAsBool = firstData->dataValue.DataAsBool == secondData.dataValue.DataAsBool;
+				firstData->dataType = TYPE_BOOL;
+			}
+			else if (operation == TNEQ)
+			{
+				firstData->dataValue.DataAsBool = firstData->dataValue.DataAsBool != secondData.dataValue.DataAsBool;
+				firstData->dataType = TYPE_BOOL;
+			}
+		}
+	}
+
+}
+
 DataS Tree::TypeCastingAssign(DATA_TYPE firstType, DataS second, LEX firstTypeName, LEX secondTypeName)
 {
 	if (firstType == TYPE_OBJ_CL)
@@ -524,28 +759,28 @@ DataS Tree::TypeCastingAssign(DATA_TYPE firstType, DataS second, LEX firstTypeNa
 	}
 }
 
-DATA_TYPE Tree::TypeCasting(DATA_TYPE firstType, DATA_TYPE secondType, LEX operation)
-{
-	if (firstType == TYPE_OBJ_CL || secondType == TYPE_OBJ_CL)
-		scan->PrintError("Объект является экземпляром класса - недопустимо проведение операции", "\0", '\0');
-
-	DATA_TYPE resType = firstType;
-
-	if (firstType != secondType)
-	{
-		if (firstType == NO_TYPE || secondType == NO_TYPE)
-			resType = NO_TYPE;
-		else if (firstType == TYPE_DOUBLE || secondType == TYPE_DOUBLE)
-			resType = TYPE_DOUBLE;
-		else
-			resType = TYPE_BOOL;
-
-	}
-
-	printf("\nПриведение типов %s и %s (%s) --> %s ------ строка %d\n", DT_Name[firstType], DT_Name[secondType], operation, DT_Name[resType], scan->Get_Number_Line());
-
-	return resType;
-}
+//DATA_TYPE Tree::TypeCasting(DATA_TYPE firstType, DATA_TYPE secondType, LEX operation)
+//{
+//	if (firstType == TYPE_OBJ_CL || secondType == TYPE_OBJ_CL)
+//		scan->PrintError("Объект является экземпляром класса - недопустимо проведение операции", "\0", '\0');
+//
+//	DATA_TYPE resType = firstType;
+//
+//	if (firstType != secondType)
+//	{
+//		if (firstType == NO_TYPE || secondType == NO_TYPE)
+//			resType = NO_TYPE;
+//		else if (firstType == TYPE_DOUBLE || secondType == TYPE_DOUBLE)
+//			resType = TYPE_DOUBLE;
+//		else
+//			resType = TYPE_BOOL;
+//
+//	}
+//
+//	printf("\nПриведение типов %s и %s (%s) --> %s ------ строка %d\n", DT_Name[firstType], DT_Name[secondType], operation, DT_Name[resType], scan->Get_Number_Line());
+//
+//	return resType;
+//}
 
 void Tree::CheckTypeBool(DATA_TYPE type)
 {
