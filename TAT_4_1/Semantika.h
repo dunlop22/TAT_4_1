@@ -48,6 +48,7 @@ public:
 
 	Tree(Tree* p, Tree* l, Tree* r, Node* data);
 	Tree(Scaner* scan);
+	Tree(Node* data, Tree* parent);
 
 	//Функции обработки бинарного дерева
 	void SetLeft(Node* data);
@@ -79,6 +80,8 @@ public:
 	Tree* SemGetFunct(LEX a);		//найти в таблице функцию с именем a и вернуть ссылку на соответсвующий элемент дерева
 	Tree* SemGetClass(LEX a);		//найти в таблице класс с именем a и вернуть ссылку на соответсвующий элемент дерева
 	int DupControl(Tree* addr, LEX a);			//проверка идентификатора a на повторное описание внутри блока
+	void MakeClassCopy(Tree* clss);			//копирование тела класса 
+	void MakeChildCopy(Tree* source);
 
 	DATA_TYPE GetTypebyLex(int lexType);
 	DATA_TYPE GetType();

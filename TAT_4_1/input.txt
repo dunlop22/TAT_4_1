@@ -1,23 +1,26 @@
-/*class tk {bool t;};
+class tk {bool t;};
 
 class pos {tk powl; double Set_qwert(){;}};
 
 bool func()
 {
 	bool r;
-	pos cl;
-	cl.powl.t = 7;
-	r = false;
-	double rt = cl.powl.t;
+	double rt;
 	r = 3.2;
 	rt = r;
 	rt = 3.8;
+	pos boba;
+	tk kat;
+	kat.t = false;
+	boba.powl.t = kat.t;
 	rt = true;
 	rt = 120;
-}*/
+}
 
 class a {bool b;};
 
 bool abc()
-{bool c;
+{bool c = false;
+a dor;
+func();
 bool j;}

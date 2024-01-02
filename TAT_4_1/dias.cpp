@@ -120,12 +120,13 @@ D =
 		Tree* v;
 
 		//проверка на существование идентификатора
-		//ссылка на поддерево
+		//копирование поддерева
 		if (semType == TYPE_OBJ_CL)
 		{
 			v = root->SemInclude(lex, ObjVar, semType, type_lex);
 			Tree* cl = root->SemGetClass(type_lex);
-			v->SetRightT(cl->GetRight());
+			v->MakeClassCopy(cl);
+			//v->SetRightT(cl->GetRight());
 		}
 		else
 		{

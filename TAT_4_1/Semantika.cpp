@@ -19,6 +19,14 @@ Tree::Tree(Scaner* scan)
 	cur = this;
 }
 
+Tree::Tree(Node* data, Tree* parent)
+{
+	node = new Node();
+	this->parent = parent;
+
+	memcpy(node, data, sizeof(Node));
+}
+
 Tree::Tree(Tree* p, Tree* l, Tree* r, Node* data)
 {
 	node = new Node();
@@ -389,6 +397,33 @@ int Tree::DupControl(Tree* addr, LEX a)
 {
 	if (FindUpOneLevel(addr, a) == NULL) return 0;
 	return 1;
+}
+
+void Tree::MakeClassCopy(Tree* clss)
+{
+	if (clss->right != NULL)
+	{
+		this->right = new Tree(clss->right->node, this);
+
+		this->right->MakeChildCopy(clss->right);
+	}
+}
+
+void Tree::MakeChildCopy(Tree* source)
+{
+	if (source->left != NULL)
+	{
+		this->left = new Tree(source->left->node, this);
+
+		this->left->MakeChildCopy(source->left);
+	}
+
+	if (source->right != NULL)
+	{
+		this->right = new Tree(source->right->node, this);
+
+		this->right->MakeChildCopy(source->right);
+	}
 }
 
 DATA_TYPE Tree::GetTypebyLex(int lexType)
