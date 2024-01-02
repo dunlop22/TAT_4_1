@@ -6,12 +6,12 @@ bool func()
 {
 	bool r;
 	double rt;
-	r = 3.2;
+	r = -3.2;
 	rt = r;
-	rt = 3.8;
+	rt = -3.8;
 	pos boba;
 	tk kat;
-	kat.t = false;
+	kat.t = -false;
 	boba.powl.t = kat.t;
 	rt = true;
 	rt = 120;

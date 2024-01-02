@@ -843,11 +843,18 @@ void dias::Z(DataS* res)
 	LEX lex;
 	int type;
 
+	bool minus = false;
+
 	type = Look_Forward(1);
 
 	if (type == TPlus || type == TMinus)
 	{
 		type = scan->FScaner(lex);
+
+		if (type == TMinus)
+		{
+			minus = true;
+		}
 	}
 
 	type = Look_Forward(1);
@@ -918,6 +925,18 @@ void dias::Z(DataS* res)
 			scan->PrintError("ќжидалось элементарное выражение", lex, '\0');
 		}
 
+	}
+
+	if (minus)
+	{
+		if (res->dataType == TYPE_BOOL)
+		{
+			res->dataValue.DataAsBool = -res->dataValue.DataAsBool;
+		}
+		else
+		{
+			res->dataValue.DataAsDouble = -res->dataValue.DataAsDouble;
+		}
 	}
 }
 
