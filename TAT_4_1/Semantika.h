@@ -43,6 +43,7 @@ private:
 	Tree* parent, * left, * right;		//родитель, левый и правый потомки
 
 public:
+	bool flagInterpret = true;
 	static Scaner* scan;
 	static Tree* cur;		//текущий элемент дерева
 
