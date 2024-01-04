@@ -39,6 +39,9 @@ S =
 ------------------------------->
 */
 	int type;
+
+	root->flagInterpret = true;
+	root->flagReturn = false;
 	
 	type = Look_Forward(1);
 

@@ -44,6 +44,8 @@ private:
 
 public:
 	bool flagInterpret = true;
+	bool flagReturn = false;
+
 	static Scaner* scan;
 	static Tree* cur;		//текущий элемент дерева
 
