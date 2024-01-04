@@ -32,5 +32,17 @@ bool main()
 	bool c = false;
 	c = abc() && c;
 
-	double k = func();
+	if (c)
+	{
+		c = false;
+	}
+	else
+	{
+		c = true;
+	}
+
+	if (c)
+	{
+		double k = func();
+	}
 }

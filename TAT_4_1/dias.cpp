@@ -529,9 +529,13 @@ if =
 		scan->PrintError("Ожидался символ \"(\"", lex, '\0');
 	}
 
+	bool flagInterpretCopy = root->flagInterpret;
+
 	DataS ifData;
 
 	Q(&ifData);
+
+	root->flagInterpret = root->flagInterpret && ifData.dataValue.DataAsBool;
 
 	root->TypeCastingAssign(TYPE_BOOL, ifData, ifData.className, ifData.className);
 
@@ -549,9 +553,13 @@ if =
 	if (type == TElse)
 	{
 		type = scan->FScaner(lex);
+
+		if (flagInterpretCopy) root->flagInterpret = !root->flagInterpret;
+
 		M();
 	}
 
+	root->flagInterpret = flagInterpretCopy;
 }
 
 void dias::O()
