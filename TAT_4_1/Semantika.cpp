@@ -229,6 +229,8 @@ Tree* Tree::GetCur()
 
 Tree* Tree::SemInclude(LEX a, OBJ_TYPE ot, DATA_TYPE t)
 {
+	if (!flagInterpret) return NULL;
+
 	if (DupControl(cur, a))
 	{
 		Tree* root = FindRoot();
@@ -268,6 +270,8 @@ Tree* Tree::SemInclude(LEX a, OBJ_TYPE ot, DATA_TYPE t)
 
 Tree* Tree::SemInclude(LEX a, OBJ_TYPE ot, DATA_TYPE t, LEX className)
 {
+	if (!flagInterpret) return NULL;
+
 	if (DupControl(cur, a))
 	{
 		Tree* root = FindRoot();
@@ -401,6 +405,8 @@ int Tree::DupControl(Tree* addr, LEX a)
 
 void Tree::MakeClassCopy(Tree* clss)
 {
+	if (!flagInterpret) return;
+
 	if (clss->right != NULL)
 	{
 		this->right = new Tree(clss->right->node, this);

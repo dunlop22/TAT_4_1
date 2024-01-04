@@ -118,7 +118,10 @@ D =
 			scan->PrintError("Ожидался идентификатор", lex, '\0');
 		}
 
-		printf("\n\nОписание переменной: %s", lex);
+		if (root->flagInterpret)
+		{
+			printf("\n\nОписание переменной: %s", lex);
+		}
 
 		Tree* v;
 
@@ -143,20 +146,24 @@ D =
 
 			DataS value;
 			Q(&value);
-			root->TypeCastingAssign(semType, value, type_lex, value.className);
+
+			if (root->flagInterpret)
+			{
+				root->TypeCastingAssign(semType, value, type_lex, value.className);
+			}
+
 			type = Look_Forward(1);
 
-			if (v->GetType() == TYPE_DOUBLE)
+			if (root->flagInterpret)
 			{
-				v->GetValue()->DataAsDouble = value.dataValue.DataAsDouble;
-			}
-			else if (v->GetType() == TYPE_BOOL)
-			{
-				v->GetValue()->DataAsBool = value.dataValue.DataAsBool;
-			}
-			else
-			{
-				;
+				if (v->GetType() == TYPE_DOUBLE)
+				{
+					v->GetValue()->DataAsDouble = value.dataValue.DataAsDouble;
+				}
+				else if (v->GetType() == TYPE_BOOL)
+				{
+					v->GetValue()->DataAsBool = value.dataValue.DataAsBool;
+				}
 			}
 		}
 

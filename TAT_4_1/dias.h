@@ -33,7 +33,7 @@ private:
 	int Look_Forward(int n);
 
 public:
-	bool DEBUG = true;
+	bool DEBUG = false;
 	dias(Scaner* s) { scan = s; root = new	Tree(scan); }
 	~dias() {
 		if (DEBUG) {
