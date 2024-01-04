@@ -26,12 +26,19 @@ struct DataS
 	LEX className;		//имя класса для объектов классов
 };
 
+struct FStart {
+	int uk;
+	int line;
+	int pos;
+};
+
 struct Node
 {
 	OBJ_TYPE objType;	//тип объекта
 	LEX id;				//идентификатор объекта
 
 	DataS data;
+	FStart funcStart; //начало функции
 };
 
 class Tree			//элемент семантической таблицы
@@ -43,6 +50,7 @@ private:
 	Tree* parent, * left, * right;		//родитель, левый и правый потомки
 
 public:
+	static Tree* lastcur;
 	bool flagInterpret = true;
 	bool flagReturn = false;
 
@@ -56,9 +64,13 @@ public:
 	//Функции обработки бинарного дерева
 	void SetLeft(Node* data);
 	void SetRight(Node* data);
+	void SetStart(int uk, int line, int pos);
+	FStart GetStart();
 
 	void SetRightT(Tree* node);
 	Tree* GetRight();
+
+	void Back();
 
 	Tree* FindRoot();
 	Tree* FindUp(Tree* from, LEX id);
@@ -76,6 +88,7 @@ public:
 	//Семантичексие подпрограммы
 	void SetCur(Tree* a);			//установить текущий узел дерева
 	Tree* GetCur();					//получить ссылку на текущий узел дерева
+	Tree* SemInclude(Tree* first);	
 	Tree* SemInclude(LEX a, OBJ_TYPE ot, DATA_TYPE t);		//занесение идентификатора a в таблицу с типом t
 	Tree* SemInclude(LEX a, OBJ_TYPE ot, DATA_TYPE t, LEX className);		//занесение идентификатора a в таблицу с типом t
 	Tree* SemNewLevel();			//новый уровень (для составного оператора)
@@ -96,7 +109,6 @@ public:
 
 	void TypeCasting(DataS* firstData, DataS secondData, int operation, LEX operationName);
 	DataS TypeCastingAssign(DATA_TYPE firstType, DataS second, LEX firstTypeName, LEX secondTypeName);	//приведение типов при присваивании
-	//DATA_TYPE TypeCasting(DATA_TYPE firstType, DATA_TYPE secondType, LEX operation);
 
 	void CheckTypeBool(DATA_TYPE type);
 };

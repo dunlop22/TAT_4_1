@@ -2,7 +2,7 @@ class tk {bool t;};
 
 class pos {tk powl; double Set_qwert(){;}};
 
-bool func()
+double func()
 {
 	bool r;
 	double rt;
@@ -15,6 +15,7 @@ bool func()
 	boba.powl.t = kat.t;
 	rt = true;
 	rt = 120;
+	return rt;
 }
 
 class a {bool b;};
@@ -22,6 +23,14 @@ class a {bool b;};
 bool abc()
 {bool c = false;
 a dor;
-func();
 bool j = true;
-j = j && true || false;}
+j = j && true || false;
+return j;}
+
+bool main()
+{
+	bool c = false;
+	c = abc() && c;
+
+	double k = func();
+}

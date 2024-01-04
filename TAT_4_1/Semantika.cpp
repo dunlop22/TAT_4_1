@@ -2,6 +2,7 @@
 
 Tree* Tree::cur = (Tree*)NULL;
 Scaner* Tree::scan = (Scaner*)NULL;
+Tree* Tree::lastcur = (Tree*)NULL;
 
 Tree::Tree(Scaner* scan)
 {
@@ -15,7 +16,7 @@ Tree::Tree(Scaner* scan)
 	left = NULL;
 	right = NULL;
 
-
+	lastcur = this;
 	cur = this;
 }
 
@@ -46,6 +47,18 @@ void Tree::SetLeft(Node* data)
 void Tree::SetRight(Node* data)
 {
 	right = new Tree(this, NULL, NULL, data);
+}
+
+void Tree::SetStart(int uk, int line, int pos)
+{
+	node->funcStart.uk = uk;
+	node->funcStart.line = line;
+	node->funcStart.pos = pos;
+}
+
+FStart Tree::GetStart()
+{
+	return node->funcStart;
 }
 
 void Tree::SetRightT(Tree* node)
@@ -225,6 +238,44 @@ void Tree::SetCur(Tree* a)
 Tree* Tree::GetCur()
 {
 	return cur;
+}
+
+Tree* Tree::SemInclude(Tree* first)
+{
+	if (!flagInterpret) return NULL;
+
+	if (first->node->objType == ObjFunct)
+	{
+		Tree* v;
+		Node n;
+
+		memcpy(n.id, first->node->id, strlen(first->node->id) + 1);
+		n.objType = first->node->objType;
+		n.data.dataType = first->node->data.dataType;
+		n.funcStart = first->node->funcStart;
+		memcpy(n.data.className, "", strlen("") + 1);
+
+		if (this->node->objType == Empty && this->parent == NULL && this->left == NULL && this->right == NULL)
+			memcpy(node, &n, sizeof(Node));
+		else
+		{
+			Tree* lastleft = first->left;
+			first->SetLeft(&n);
+			lastcur = cur;
+			cur = first->left;
+			cur->left = lastleft;
+		}
+
+		v = cur;
+		memcpy(&n.id, &"", 2);
+		n.objType = Empty;
+
+		cur->SetRight(&n);
+		cur = cur->right;
+		return v;
+	}
+	else
+		return NULL;
 }
 
 Tree* Tree::SemInclude(LEX a, OBJ_TYPE ot, DATA_TYPE t)
@@ -471,6 +522,8 @@ Tree* Tree::GetCurrentFunct()
 
 void Tree::TypeCasting(DataS* firstData, DataS secondData, int operation, LEX operationName)
 {
+	if (!flagInterpret) return;
+
 	DATA_TYPE resType = firstData->dataType;
 
 	if (firstData->dataType == TYPE_OBJ_CL || secondData.dataType == TYPE_OBJ_CL)
@@ -765,35 +818,24 @@ DataS Tree::TypeCastingAssign(DATA_TYPE firstType, DataS second, LEX firstTypeNa
 	}
 }
 
-//DATA_TYPE Tree::TypeCasting(DATA_TYPE firstType, DATA_TYPE secondType, LEX operation)
-//{
-//	if (firstType == TYPE_OBJ_CL || secondType == TYPE_OBJ_CL)
-//		scan->PrintError("Объект является экземпляром класса - недопустимо проведение операции", "\0", '\0');
-//
-//	DATA_TYPE resType = firstType;
-//
-//	if (firstType != secondType)
-//	{
-//		if (firstType == NO_TYPE || secondType == NO_TYPE)
-//			resType = NO_TYPE;
-//		else if (firstType == TYPE_DOUBLE || secondType == TYPE_DOUBLE)
-//			resType = TYPE_DOUBLE;
-//		else
-//			resType = TYPE_BOOL;
-//
-//	}
-//
-//	printf("\nПриведение типов %s и %s (%s) --> %s ------ строка %d\n", DT_Name[firstType], DT_Name[secondType], operation, DT_Name[resType], scan->Get_Number_Line());
-//
-//	return resType;
-//}
-
 void Tree::CheckTypeBool(DATA_TYPE type)
 {
+	if (!flagInterpret) return;
+
 	if (type != TYPE_BOOL)
 	{
 		scan->PrintError("Выражение должно относится к целочисленному типу");
 	}
+}
+
+void Tree::Back()
+{
+	cur->CleanChild();
+	Tree* lastleft = cur->left;
+	cur = cur->parent;
+	delete cur->left;
+	cur->left = lastleft;
+	cur = lastcur;
 }
 
 

@@ -131,7 +131,11 @@ D =
 		{
 			v = root->SemInclude(lex, ObjVar, semType, type_lex);
 			Tree* cl = root->SemGetClass(type_lex);
-			v->MakeClassCopy(cl);
+
+			if (root->flagInterpret)
+			{
+				v->MakeClassCopy(cl);
+			}
 		}
 		else
 		{
@@ -199,6 +203,7 @@ void dias::F()
 {
 	LEX lex;
 	int type;
+	bool mainFunc = false;
 
 	type = scan->FScaner(lex);
 
@@ -210,11 +215,15 @@ void dias::F()
 	DATA_TYPE semType = root->GetTypebyLex(type);
 
 	//проверка идентификатора класса на существование
-
 	type = scan->FScaner(lex);
+
 	if (type != TMain && type != TIdent)
 	{
 		scan->PrintError("Ожидалось имя функции", lex, '\0');
+	}
+	else if (type == TMain)
+	{
+		mainFunc = true;
 	}
 
 	printf("\n\nОписание функции: %s", lex);
@@ -235,8 +244,27 @@ void dias::F()
 		scan->PrintError("Ожидался символ \")\"", lex, '\0');
 	}
 
+	bool flagInterpretCopy = root->flagInterpret;
+
+	if (flagInterpretCopy)
+	{
+		if (!mainFunc)
+		{
+			root->flagInterpret = false;
+		}
+
+		v->SetStart(scan->GetUK(), scan->Get_Number_Line(), scan->Get_Position());
+	}
+
 	K();
-	root->SetCur(v);
+
+	root->flagInterpret = flagInterpretCopy;
+
+	if (root->flagInterpret)
+	{
+		root->SetCur(v);
+		v->CleanChild();
+	}
 }
 
 void dias::K()
@@ -307,16 +335,22 @@ void dias::K()
 		scan->PrintError("Ожидался символ \"}\"", lex, '\0');
 	}
 
-	root->SetCur(v);
 
-	v->CleanChild();
-	if (DEBUG)
+	if (root->flagInterpret)
 	{
-		printf("\n\nОСВОБОЖДЕНИЕ ПАМЯТИ - конец составного оператора");
+		root->SetCur(v);
 
-		printf("\n\nСЕМАНТИЧЕСКОЕ ДЕРЕВО\n\n");
-		PrintTree();
+		v->CleanChild();
+
+		if (DEBUG)
+		{
+			printf("\n\nОСВОБОЖДЕНИЕ ПАМЯТИ - конец составного оператора");
+
+			printf("\n\nСЕМАНТИЧЕСКОЕ ДЕРЕВО\n\n");
+			PrintTree();
+		}
 	}
+	
 }
 
 
@@ -381,12 +415,15 @@ void dias::M()
 
 			B(&ident);
 
-			res.dataType = ident->GetType();
-			res.dataValue = *ident->GetValue();
-
-			if (res.dataType == TYPE_OBJ_CL)
+			if (root->flagInterpret)
 			{
-				ident->GetClassName(res.className);
+				res.dataType = ident->GetType();
+				res.dataValue = *ident->GetValue();
+
+				if (res.dataType == TYPE_OBJ_CL)
+				{
+					ident->GetClassName(res.className);
+				}
 			}
 
 			type = Look_Forward(1);
@@ -438,11 +475,27 @@ return =
 
 	Q(&ifData);
 
-	Tree* funct = root->GetCur()->GetCurrentFunct();
-	LEX functClassName;
-	funct->GetClassName(functClassName);
+	if (root->flagInterpret)
+	{
+		Tree* funct = root->GetCur()->GetCurrentFunct();
+		LEX functClassName;
+		funct->GetClassName(functClassName);
 
-	root->TypeCastingAssign(funct->GetType(), ifData, functClassName, ifData.className);
+		ifData = root->TypeCastingAssign(funct->GetType(), ifData, functClassName, ifData.className);
+
+		if (funct->GetType() == TYPE_BOOL)
+		{
+			funct->GetValue()->DataAsBool = ifData.dataValue.DataAsBool;
+
+		}
+		else if (funct->GetType() == TYPE_DOUBLE)
+		{
+			funct->GetValue()->DataAsDouble = ifData.dataValue.DataAsDouble;
+		}
+
+		root->flagInterpret = false;
+		root->flagReturn = true;
+	}
 }
 
 
@@ -517,11 +570,14 @@ void dias::O()
 
 	B(&ident);
 
-	firstData.dataType = ident->GetType();
-
-	if (firstData.dataType == TYPE_OBJ_CL)
+	if (root->flagInterpret)
 	{
-		ident->GetClassName(firstData.className);
+		firstData.dataType = ident->GetType();
+
+		if (firstData.dataType == TYPE_OBJ_CL)
+		{
+			ident->GetClassName(firstData.className);
+		}
 	}
 
 	type = scan->FScaner(lex);
@@ -535,16 +591,19 @@ void dias::O()
 
 	Q(&value);
 
-	value = root->TypeCastingAssign(firstData.dataType, value, firstData.className, value.className);
-
-	if (firstData.dataType == TYPE_BOOL)
+	if (root->flagInterpret)
 	{
-		ident->GetValue()->DataAsBool = value.dataValue.DataAsBool;
+		value = root->TypeCastingAssign(firstData.dataType, value, firstData.className, value.className);
 
-	}
-	else if (firstData.dataType == TYPE_DOUBLE)
-	{
-		ident->GetValue()->DataAsDouble = value.dataValue.DataAsDouble;
+		if (firstData.dataType == TYPE_BOOL)
+		{
+			ident->GetValue()->DataAsBool = value.dataValue.DataAsBool;
+
+		}
+		else if (firstData.dataType == TYPE_DOUBLE)
+		{
+			ident->GetValue()->DataAsDouble = value.dataValue.DataAsDouble;
+		}
 	}
 }
 
@@ -914,21 +973,33 @@ void dias::Z(DataS* res)
 	}
 	else if (type == TIdent)
 	{
+		int uk1 = scan->GetUK();
+		int line = scan->Get_Number_Line();
+		int pos = scan->Get_Position();
+
 		Tree* ident = NULL;
+
 		B(&ident);
 
-		res->dataType = ident->GetType();
-		res->dataValue = *ident->GetValue();
-
-		if (res->dataType == TYPE_OBJ_CL)
+		if (root->flagInterpret)
 		{
-			ident->GetClassName(res->className);
+			res->dataType = ident->GetType();
+			res->dataValue = *ident->GetValue();
+
+			if (res->dataType == TYPE_OBJ_CL)
+			{
+				ident->GetClassName(res->className);
+			}
 		}
 
 		type = Look_Forward(1);
 
 		if (type == TLS)
 		{
+			scan->PutUK(uk1);
+			scan->Set_Line_Number(line);
+			scan->Set_Position(pos);
+
 			P(res);
 		}
 	}
@@ -991,27 +1062,36 @@ void dias::P(DataS* res)
 */
 	LEX lex;
 	int type;
-	Tree* ident = NULL;
+	Tree* sfunct = NULL;
 
 	type = Look_Forward(1);
 
 	if (type != TMain)
 	{
-		B(&ident);
-
-		res->dataType = ident->GetType();
-		res->dataValue = *ident->GetValue();
-
-		if (res->dataType == TYPE_OBJ_CL)
-		{
-			ident->GetClassName(res->className);
-		}
+		B(&sfunct);
 	}
 	else
 	{
 		type = scan->FScaner(lex);
+		sfunct = root->SemGetFunct(lex);
+	}
 
-		Tree* funct = root->SemGetFunct(lex);
+	Tree* funct = root->SemInclude(sfunct);
+
+	if (root->flagInterpret)
+	{
+		int uk = scan->GetUK();
+		int line = scan->Get_Number_Line();
+		int pos = scan->Get_Position();
+
+		FStart fs = funct->GetStart();
+
+		scan->PutUK(fs.uk);
+		scan->Set_Line_Number(fs.line);
+		scan->Set_Position(fs.pos);
+
+		M();
+
 		res->dataType = funct->GetType();
 
 		if (res->dataType == TYPE_DOUBLE)
@@ -1022,12 +1102,31 @@ void dias::P(DataS* res)
 		{
 			res->dataValue.DataAsBool = funct->GetValue()->DataAsBool;
 		}
+		else if (res->dataType == TYPE_OBJ_CL)
+		{
+			funct->GetClassName(res->className);
+		}
+
+		scan->PutUK(uk);
+		scan->Set_Line_Number(line);
+		scan->Set_Position(pos);
+
+		if (root->flagReturn)
+		{
+			root->flagReturn = false;
+			root->flagInterpret = true;
+			funct->CleanChild();
+			root->SetCur(funct);
+			root->Back();
+		}
 		else
 		{
-			;
+			scan->PrintError("Отсутствует возвращаемое значение функции");
 		}
 	}
-	
+
+
+
 	type = scan->FScaner(lex);
 
 	if (type != TLS)
@@ -1066,21 +1165,21 @@ void dias::B(Tree** ident)
 	type = Look_Forward(1);
 
 	//проверка на существование идентификатора, определение типа
-		
-	if (type == TLS)
+	if (root->flagInterpret)
 	{
-		*ident = root->SemGetFunct(lex);
+		if (type == TLS)
+		{
+			*ident = root->SemGetFunct(lex);
+		}
+		else
+		{
+			*ident = root->SemGetVar(lex);
+		}
 	}
-	else
-	{
-		*ident = root->SemGetVar(lex);
-	}
-
-
 
 	while (type == TTochka)
 	{
-		if ((*ident)->GetType() != TYPE_OBJ_CL)
+		if (root->flagInterpret && (*ident)->GetType() != TYPE_OBJ_CL)
 		{
 			scan->PrintError("Объект не является экземпляром класса", lex, '\0');
 		}
@@ -1095,13 +1194,16 @@ void dias::B(Tree** ident)
 
 		type = Look_Forward(1);
 
-		if (type == TLS)
+		if (root->flagInterpret)
 		{
-			*ident = (*ident)->FindRightLeftFunct(lex);
-		}
-		else
-		{
-			*ident = (*ident)->FindRightLeftVar(lex);
+			if (type == TLS)
+			{
+				*ident = (*ident)->FindRightLeftFunct(lex);
+			}
+			else
+			{
+				*ident = (*ident)->FindRightLeftVar(lex);
+			}
 		}
 	}
 }
